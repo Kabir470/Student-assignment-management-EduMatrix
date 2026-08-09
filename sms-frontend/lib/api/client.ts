@@ -2,7 +2,9 @@
  * API Client base connecting to ASP.NET Core backend.
  */
 
-export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8080/api';
+const rawApiUrl = process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080/api';
+const cleanApiUrl = rawApiUrl.replace(/\/+$/, '');
+export const API_BASE_URL = cleanApiUrl.endsWith('/api') ? cleanApiUrl : `${cleanApiUrl}/api`;
 
 /**
  * Generic API call wrapper

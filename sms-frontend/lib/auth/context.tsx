@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import type { AuthUser, LoginInput, RegisterInput, UserRole } from '@/lib/types';
-import { apiCall } from '@/lib/api/client';
+import { apiCall, API_BASE_URL } from '@/lib/api/client';
 import { supabase } from '@/lib/supabase';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -62,8 +62,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
 
       // 2. Fetch User Profile from ASP.NET Core Backend
-      const baseUrl = process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080/api';
-      const res = await fetch(`${baseUrl}/users/me`, {
+      const res = await fetch(`${API_BASE_URL}/users/me`, {
         headers: {
           'Authorization': `Bearer ${data.session.access_token}`
         }
