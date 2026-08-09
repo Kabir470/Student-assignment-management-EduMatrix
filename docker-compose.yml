@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./sms-backend
+      dockerfile: Dockerfile
+    container_name: edumatrix-backend
+    ports:
+      - "8080:8080"
+    env_file:
+      - ./sms-backend/.env
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./sms-frontend
+      dockerfile: Dockerfile
+      target: dev
+    container_name: edumatrix-frontend
+    env_file:
+      - ./sms-frontend/.env
+    volumes:
+      - ./sms-frontend:/app
+      - /app/node_modules
+      - /app/.next
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8080/api
+      - WATCHPACK_POLLING=true
+    depends_on:
+      - backend
+    restart: unless-stopped
