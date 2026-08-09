@@ -24,4 +24,5 @@ COPY --from=build /app/publish .
 # Expose port and start application
 EXPOSE 8080
 ENV ASPNETCORE_URLS=http://+:8080
+ENV DOTNET_USE_POLLING_FILE_WATCHER=true
 ENTRYPOINT ["dotnet", "EduMatrix.API.dll"]
