@@ -12,7 +12,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: { default: 'EduTrack — Assignment Management System', template: '%s | EduTrack' },
+  title: { default: 'EduMatrix — Assignment Management System', template: '%s | EduMatrix' },
   description: 'A modern role-based assignment and submission management system for schools and colleges.',
   keywords: ['assignment', 'submission', 'education', 'school', 'management'],
 };

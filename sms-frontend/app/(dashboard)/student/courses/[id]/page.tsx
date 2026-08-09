@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-import { FileText, ClipboardCheck, Clock, Info, MessageSquare, Maximize2 } from 'lucide-react';
+import { FileText, ClipboardCheck, Clock, Info, MessageSquare, Maximize2, BarChart2, ChevronDown, ChevronUp } from 'lucide-react';
 import Link from 'next/link';
 import { RequireRole } from '@/lib/auth/guards';
 import { useAuth } from '@/lib/auth/context';
@@ -22,6 +22,7 @@ export default function StudentCourseWorkspacePage() {
   const [assignments, setAssignments] = useState<Assignment[]>([]);
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isPerformanceExpanded, setIsPerformanceExpanded] = useState(false);
 
   useEffect(() => {
     async function loadAll() {
@@ -173,6 +174,91 @@ export default function StudentCourseWorkspacePage() {
                   transition: 'width 0.5s ease'
                 }} />
               </div>
+            </div>
+
+            {/* Performance Metrics */}
+            <div className="card" style={{ padding: '1.25rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
+                <h3 style={{ fontSize: '0.9rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                  <BarChart2 size={16} style={{ color: 'var(--color-primary)' }} /> Performance Metrics
+                </h3>
+                <button 
+                  onClick={() => setIsPerformanceExpanded(!isPerformanceExpanded)}
+                  style={{ 
+                    background: 'transparent', 
+                    border: 'none', 
+                    cursor: 'pointer',
+                    color: 'var(--color-text-muted)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    padding: 0
+                  }}
+                  title={isPerformanceExpanded ? "Collapse" : "Expand"}
+                >
+                  {isPerformanceExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                </button>
+              </div>
+
+              {(() => {
+                const gradedSubmissions = submissions.filter(s => s.status === 'graded');
+                if (gradedSubmissions.length === 0) {
+                  return <p style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)' }}>No graded assignments yet.</p>;
+                }
+
+                const totalObtainedMarks = gradedSubmissions.reduce((acc, curr) => acc + (curr.grade || 0), 0);
+                const totalGradedPossibleMarks = assignments
+                  .filter(a => gradedSubmissions.some(s => s.assignmentId === a.id))
+                  .reduce((acc, curr) => acc + (curr.totalMarks || 0), 0);
+                
+                const percentage = totalGradedPossibleMarks > 0 
+                  ? Math.round((totalObtainedMarks / totalGradedPossibleMarks) * 100) 
+                  : 0;
+
+                return (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+                      <div style={{ display: 'flex', flexDirection: 'column' }}>
+                        <span style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--color-text)', lineHeight: 1 }}>{percentage}%</span>
+                        <span style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', marginTop: '0.2rem' }}>Average Grade</span>
+                      </div>
+                      <div style={{ textAlign: 'right' }}>
+                        <span style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--color-primary)' }}>
+                          {totalObtainedMarks} <span style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', fontWeight: 500 }}>/ {totalGradedPossibleMarks} pts</span>
+                        </span>
+                      </div>
+                    </div>
+
+                    {isPerformanceExpanded && (
+                      <div className="animate-fade-in" style={{ 
+                        marginTop: '0.5rem', 
+                        paddingTop: '1rem', 
+                        borderTop: '1px solid var(--color-border)',
+                        display: 'flex', 
+                        flexDirection: 'column', 
+                        gap: '0.75rem' 
+                      }}>
+                        <p style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                          Graded Assignments Breakdown
+                        </p>
+                        {gradedSubmissions.map(sub => {
+                          const assignment = assignments.find(a => a.id === sub.assignmentId);
+                          if (!assignment) return null;
+                          return (
+                            <div key={sub.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.85rem' }}>
+                              <span style={{ color: 'var(--color-text)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '140px' }}>
+                                {assignment.title}
+                              </span>
+                              <span style={{ fontWeight: 600, color: 'var(--color-primary)' }}>
+                                {sub.grade} <span style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', fontWeight: 400 }}>/ {assignment.totalMarks}</span>
+                              </span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                );
+              })()}
             </div>
           </div>
         </div>

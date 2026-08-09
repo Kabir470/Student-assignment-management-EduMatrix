@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 import {
   BookOpen, LayoutDashboard, Users, BookMarked, FileText,
   ClipboardCheck, GraduationCap, BarChart3, ChevronLeft, ChevronRight,
-  Settings, HelpCircle,
+  Settings, HelpCircle, X,
 } from 'lucide-react';
 import { useAuth } from '@/lib/auth/context';
 import { getInitials, cn } from '@/lib/utils';
@@ -27,7 +27,6 @@ const NAV = {
       { href: '/teacher', label: 'Dashboard', icon: LayoutDashboard, exact: true },
       { href: '/teacher/courses', label: 'My Courses', icon: BookMarked },
       { href: '/teacher/assignments', label: 'Assignments', icon: FileText },
-      { href: '/teacher/submissions', label: 'Submissions', icon: ClipboardCheck },
     ]},
   ],
   student: [
@@ -56,9 +55,10 @@ interface SidebarProps {
   isCollapsed: boolean;
   onToggle: () => void;
   isOpenMobile?: boolean;
+  onCloseMobile?: () => void;
 }
 
-export default function Sidebar({ isCollapsed, onToggle, isOpenMobile }: SidebarProps) {
+export default function Sidebar({ isCollapsed, onToggle, isOpenMobile, onCloseMobile }: SidebarProps) {
   const { user } = useAuth();
   const pathname = usePathname();
 
@@ -78,7 +78,7 @@ export default function Sidebar({ isCollapsed, onToggle, isOpenMobile }: Sidebar
       style={{ width: isCollapsed ? 64 : 'var(--sidebar-width)' }}
     >
       {/* Logo */}
-      <div className="sidebar-logo">
+      <div className="sidebar-logo" style={{ position: 'relative' }}>
         <div style={{
           width: 36, height: 36, borderRadius: 'var(--radius-md)',
           background: 'var(--gradient-primary)',
@@ -89,9 +89,18 @@ export default function Sidebar({ isCollapsed, onToggle, isOpenMobile }: Sidebar
         </div>
         {!isCollapsed && (
           <div style={{ overflow: 'hidden' }}>
-            <p style={{ fontWeight: 800, fontSize: '1rem', color: 'var(--color-text)', whiteSpace: 'nowrap' }}>EduTrack</p>
+            <p style={{ fontWeight: 800, fontSize: '1rem', color: 'var(--color-text)', whiteSpace: 'nowrap' }}>EduMatrix</p>
             <p style={{ fontSize: '0.7rem', color: 'var(--color-text-muted)', whiteSpace: 'nowrap' }}>SMS Platform</p>
           </div>
+        )}
+        {isOpenMobile && onCloseMobile && (
+          <button 
+            onClick={onCloseMobile}
+            className="btn btn-ghost btn-icon d-md-none"
+            style={{ position: 'absolute', right: '0.5rem', width: '32px', height: '32px', padding: '0.25rem' }}
+          >
+            <X size={18} />
+          </button>
         )}
       </div>
 
@@ -109,6 +118,7 @@ export default function Sidebar({ isCollapsed, onToggle, isOpenMobile }: Sidebar
                 <Link
                   key={item.href}
                   href={item.href}
+                  onClick={() => { if (isOpenMobile && onCloseMobile) onCloseMobile(); }}
                   className={`sidebar-nav-item ${active ? 'active' : ''}`}
                   title={isCollapsed ? item.label : undefined}
                   style={{ justifyContent: isCollapsed ? 'center' : 'flex-start' }}
@@ -157,18 +167,9 @@ export default function Sidebar({ isCollapsed, onToggle, isOpenMobile }: Sidebar
       {/* Collapse Toggle */}
       <button
         onClick={onToggle}
-        style={{
-          position: 'absolute', top: '50%', right: -12,
-          transform: 'translateY(-50%)',
-          width: 24, height: 24, borderRadius: '50%',
-          background: 'var(--color-surface-2)',
-          border: '1px solid var(--color-border-strong)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          cursor: 'pointer', color: 'var(--color-text-secondary)',
-          transition: 'all var(--transition-fast)',
-        }}
+        className="sidebar-collapse-btn"
       >
-        {isCollapsed ? <ChevronRight size={12} /> : <ChevronLeft size={12} />}
+        {isCollapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
       </button>
     </aside>
   );

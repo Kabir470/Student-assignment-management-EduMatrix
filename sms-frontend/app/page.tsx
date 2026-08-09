@@ -30,7 +30,7 @@ export default function HomePage() {
           animation: 'spin 1s linear infinite',
         }} />
         <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-        <p style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem' }}>Loading EduTrack...</p>
+        <p style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem' }}>Loading EduMatrix...</p>
       </div>
     </div>
   );

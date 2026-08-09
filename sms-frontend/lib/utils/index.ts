@@ -121,3 +121,65 @@ export function getDashboardPath(role: string): string {
     default: return '/login';
   }
 }
+
+// ─── Status Display Helpers ───────────────────────────────────────────────────
+// Single source of truth for human-readable statuses used across all panels.
+
+/**
+ * Derives the effective display state of an assignment.
+ * - draft     → "Draft" (saved, not yet published)
+ * - published → "Active" (accepting submissions) OR "Closed" (past due, no more submissions)
+ * - archived  → "Archived"
+ */
+export type AssignmentDisplayStatus = 'Draft' | 'Active' | 'Closed' | 'Archived';
+
+export function getAssignmentDisplayStatus(status: string, dueDate: string): AssignmentDisplayStatus {
+  if (status === 'draft') return 'Draft';
+  if (status === 'archived') return 'Archived';
+  // published
+  if (isPastDue(dueDate)) return 'Closed';
+  return 'Active';
+}
+
+export const ASSIGNMENT_DISPLAY_STATUS_COLORS: Record<AssignmentDisplayStatus, { bg: string; color: string }> = {
+  Draft:    { bg: 'rgba(107,114,128,0.12)', color: '#6B7280' },
+  Active:   { bg: 'rgba(16,185,129,0.12)',  color: '#059669' },
+  Closed:   { bg: 'rgba(239,68,68,0.12)',   color: '#DC2626' },
+  Archived: { bg: 'rgba(245,158,11,0.12)',  color: '#D97706' },
+};
+
+/**
+ * Derives the display state of a submission.
+ * - submitted + on time  → "Submitted"
+ * - submitted + late     → "Late"
+ * - graded               → "Graded"
+ * - returned             → "Returned"
+ * - no submission + overdue assignment → "Missed"
+ * - no submission + active assignment  → "Pending"
+ */
+export type SubmissionDisplayStatus = 'Submitted' | 'Late' | 'Graded' | 'Returned' | 'Pending' | 'Missed';
+
+export function getSubmissionDisplayStatus(
+  submissionStatus: string | null | undefined,
+  submittedAt: string | null | undefined,
+  dueDate: string
+): SubmissionDisplayStatus {
+  if (!submissionStatus || submissionStatus === 'pending') {
+    return isPastDue(dueDate) ? 'Missed' : 'Pending';
+  }
+  if (submissionStatus === 'graded') return 'Graded';
+  if (submissionStatus === 'returned') return 'Returned';
+  // submitted or late
+  if (submittedAt && isPastDue(dueDate) && new Date(submittedAt) > new Date(dueDate)) return 'Late';
+  if (submissionStatus === 'late') return 'Late';
+  return 'Submitted';
+}
+
+export const SUBMISSION_DISPLAY_STATUS_COLORS: Record<SubmissionDisplayStatus, { bg: string; color: string }> = {
+  Submitted: { bg: 'rgba(79,70,229,0.12)',   color: '#4F46E5' },
+  Late:      { bg: 'rgba(239,68,68,0.12)',   color: '#DC2626' },
+  Graded:    { bg: 'rgba(16,185,129,0.12)',  color: '#059669' },
+  Returned:  { bg: 'rgba(139,92,246,0.12)',  color: '#7C3AED' },
+  Pending:   { bg: 'rgba(245,158,11,0.12)',  color: '#D97706' },
+  Missed:    { bg: 'rgba(239,68,68,0.12)',   color: '#DC2626' },
+};

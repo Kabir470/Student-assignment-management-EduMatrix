@@ -70,8 +70,7 @@ export default function TopNav({ isSidebarCollapsed, onMobileMenuToggle, isMobil
 
   return (
     <header
-      className="topnav"
-      style={{ left: isSidebarCollapsed ? 64 : 'var(--sidebar-width)' }}
+      className={`topnav ${isSidebarCollapsed ? 'sidebar-collapsed' : ''}`}
     >
       {/* Left: Mobile menu + Search */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
@@ -85,7 +84,7 @@ export default function TopNav({ isSidebarCollapsed, onMobileMenuToggle, isMobil
         </button>
 
         {showSearch ? (
-          <div className="input-wrapper" style={{ width: 300 }}>
+          <div className="input-wrapper" style={{ width: '100%', maxWidth: 300 }}>
             <Search size={16} className="input-icon" />
             <input
               className="input"

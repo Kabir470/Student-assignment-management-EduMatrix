@@ -149,7 +149,7 @@ export default function AdminCoursesPage() {
         </div>
 
         {/* Course Cards Grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1rem' }}>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {isLoading ? (
             Array.from({ length: 6 }).map((_, i) => (
               <div key={i} className="skeleton" style={{ height: 200, borderRadius: 'var(--radius-lg)' }} />
@@ -207,7 +207,7 @@ export default function AdminCoursesPage() {
           }
         >
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '0.75rem' }}>
+            <div className="grid grid-cols-1 sm:grid-cols-[2fr_1fr] gap-3">
               <div className="form-group">
                 <label className="form-label">Course Title</label>
                 <input className={`input ${errors.title ? 'input-error' : ''}`} placeholder="e.g. Introduction to Computer Science" {...register('title')} />
@@ -224,7 +224,7 @@ export default function AdminCoursesPage() {
               <textarea rows={3} className={`input ${errors.description ? 'input-error' : ''}`} placeholder="Course description..." style={{ resize: 'vertical' }} {...register('description')} />
               {errors.description && <p className="form-error">{errors.description.message}</p>}
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="form-group">
                 <label className="form-label">Assigned Teacher</label>
                 <select className={`input ${errors.teacherId ? 'input-error' : ''}`} {...register('teacherId')}>

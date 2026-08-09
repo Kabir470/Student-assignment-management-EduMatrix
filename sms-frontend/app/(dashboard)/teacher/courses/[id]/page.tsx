@@ -15,7 +15,7 @@ import { assignmentsService } from '@/lib/api/assignments';
 import { submissionsService } from '@/lib/api/submissions';
 import { usersService } from '@/lib/api/users';
 import type { Course, Assignment, Submission, EnrolledStudent, User, AssignmentCreateInput } from '@/lib/types';
-import { formatDate, isPastDue } from '@/lib/utils';
+import { formatDate, isPastDue, getAssignmentDisplayStatus } from '@/lib/utils';
 
 type Tab = 'students' | 'assignments' | 'submissions';
 
@@ -256,11 +256,14 @@ export default function TeacherCourseWorkspacePage() {
                           <p style={{ fontWeight: 600, color: 'var(--color-text)' }}>{a.title}</p>
                           <p style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>{a.description.slice(0, 50)}...</p>
                         </td>
-                        <td style={{ fontSize: '0.85rem', color: isPastDue(a.dueDate) && a.status === 'published' ? 'var(--color-danger)' : 'var(--color-text-secondary)' }}>
-                          {formatDate(a.dueDate)}
+                        <td>
+                          {(() => {
+                            const ds = getAssignmentDisplayStatus(a.status, a.dueDate);
+                            return <span style={{ fontSize: '0.85rem', color: ds === 'Closed' ? 'var(--color-danger)' : 'var(--color-text-secondary)' }}>{formatDate(a.dueDate)}</span>;
+                          })()}
                         </td>
                         <td><span style={{ fontWeight: 600 }}>{a.totalMarks}</span></td>
-                        <td><AssignmentStatusBadge status={a.status} /></td>
+                        <td><AssignmentStatusBadge status={a.status} dueDate={a.dueDate} /></td>
                         <td>
                           <div style={{ display: 'flex', gap: '0.3rem' }}>
                             <Link href={`/teacher/assignments/${a.id}`} className="btn btn-ghost btn-icon btn-sm" title="View Submissions">
@@ -331,7 +334,7 @@ export default function TeacherCourseWorkspacePage() {
                               : <span style={{ color: 'var(--color-text-muted)' }}>—</span>
                             }
                           </td>
-                          <td><SubmissionStatusBadge status={s.status} /></td>
+                          <td><SubmissionStatusBadge status={s.status} submittedAt={s.submittedAt} dueDate={assignment?.dueDate} /></td>
                           <td>
                             <Link href={`/teacher/assignments/${s.assignmentId}`} className="btn btn-primary btn-sm">
                               Grade

@@ -27,11 +27,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           isCollapsed={isCollapsed}
           onToggle={() => setIsCollapsed(v => !v)}
           isOpenMobile={isMobileMenuOpen}
+          onCloseMobile={() => setIsMobileMenuOpen(false)}
         />
 
         <div
-          className="main-content"
-          style={{ marginLeft: isCollapsed ? 64 : 'var(--sidebar-width)' }}
+          className={`main-content ${isCollapsed ? 'sidebar-collapsed' : ''}`}
         >
           <TopNav
             isSidebarCollapsed={isCollapsed}
