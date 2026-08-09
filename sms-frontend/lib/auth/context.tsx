@@ -62,8 +62,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
 
       // 2. Fetch User Profile from ASP.NET Core Backend
-      // We pass the session token explicitly here in case the global client doesn't have it yet
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080/api'}/users/me`, {
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080/api';
+      const res = await fetch(`${baseUrl}/users/me`, {
         headers: {
           'Authorization': `Bearer ${data.session.access_token}`
         }
