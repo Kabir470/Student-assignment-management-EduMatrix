@@ -73,22 +73,13 @@ export default function TeacherAssignmentsPage() {
   const openCreate = () => { setEditAssignment(null); setAiDraft(null); setIsFormOpen(true); };
   const openEdit = (a: Assignment) => { setEditAssignment(a); setIsFormOpen(true); };
 
-  const handleFormSubmit = async (data: Omit<AssignmentCreateInput, 'teacherId' | 'teacherName' | 'courseName'>) => {
+  const handleFormSubmit = async (data: AssignmentCreateInput) => {
     if (!user) return;
-    const course = courses.find(c => c.id === data.courseId);
-    if (!course) return;
-
-    const payload: AssignmentCreateInput = {
-      ...data,
-      teacherId: user.id,
-      teacherName: user.name,
-      courseName: course.name,
-    };
 
     if (editAssignment) {
       await assignmentsService.update(editAssignment.id, data);
     } else {
-      await assignmentsService.create(payload);
+      await assignmentsService.create(data);
     }
     loadData();
     setIsFormOpen(false);
@@ -269,6 +260,7 @@ export default function TeacherAssignmentsPage() {
         <AiAssignmentModal 
           isOpen={isAiModalOpen} 
           onClose={() => setIsAiModalOpen(false)} 
+          courses={courses}
           onApprove={(data) => {
             setIsAiModalOpen(false);
             setAiDraft(data);

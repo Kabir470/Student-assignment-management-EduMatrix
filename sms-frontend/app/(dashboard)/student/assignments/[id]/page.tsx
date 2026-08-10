@@ -176,9 +176,9 @@ export default function StudentAssignmentDetailPage() {
       const opt = {
         margin: 15,
         filename: `${assignment.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.pdf`,
-        image: { type: 'jpeg', quality: 1 },
+        image: { type: 'jpeg' as const, quality: 1 },
         html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', letterRendering: true },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' as const }
       };
 
       html2pdf().set(opt).from(wrapper).save();

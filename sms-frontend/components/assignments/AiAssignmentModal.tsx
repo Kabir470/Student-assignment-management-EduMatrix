@@ -263,7 +263,7 @@ export default function AiAssignmentModal({ isOpen, onClose, onApprove, courses 
                         >
                           <option value="">Select Course...</option>
                           {courses?.map(course => (
-                            <option key={course.id} value={course.id}>{course.name}</option>
+                            <option key={course.id} value={course.id}>{course.title}</option>
                           ))}
                         </select>
                       </div>
