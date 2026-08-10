@@ -11,8 +11,9 @@ import { usersService } from '@/lib/api/users';
 import { coursesService } from '@/lib/api/courses';
 import { announcementsService } from '@/lib/api/announcements';
 import { assignmentsService } from '@/lib/api/assignments';
-import { formatRelative } from '@/lib/utils';
-import type { Assignment } from '@/lib/types';
+import { formatRelative, calculatePercentage } from '@/lib/utils';
+import type { Assignment, Course, Submission } from '@/lib/types';
+import { submissionsService } from '@/lib/api/submissions';
 import AssignmentCalendar from '@/components/dashboard/AssignmentCalendar';
 
 export default function AdminDashboard() {
@@ -29,6 +30,8 @@ export default function AdminDashboard() {
 
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [assignments, setAssignments] = useState<Assignment[]>([]);
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [isPostingAnnouncement, setIsPostingAnnouncement] = useState(false);
   const [newTitle, setNewTitle] = useState('');
   const [newContent, setNewContent] = useState('');
@@ -43,19 +46,22 @@ export default function AdminDashboard() {
   useEffect(() => {
     async function loadData() {
       try {
-        const [users, courses, asg] = await Promise.all([
+        const [users, coursesData, asg, subs] = await Promise.all([
           usersService.getAll({ limit: 100 }),
           coursesService.getAll({ limit: 100 }),
           assignmentsService.getAll({ limit: 1000 }),
+          submissionsService.getAll({ limit: 5000 })
         ]);
 
         setAssignments(asg.data);
+        setCourses(coursesData.data);
+        setSubmissions(subs.data);
 
         setStats({
           totalUsers: users.totalCount,
           activeStudents: users.data.filter(u => u.role.toLowerCase() === 'student').length,
           activeTeachers: users.data.filter(u => u.role.toLowerCase() === 'teacher').length,
-          totalCourses: courses.totalCount,
+          totalCourses: coursesData.totalCount,
           totalAssignments: asg.totalCount,
           pendingSubmissions: 0
         });
@@ -109,7 +115,7 @@ export default function AdminDashboard() {
 
 
           {/* Course Reports Summary */}
-          {/* <div className="card" style={{ padding: '1.5rem', gridColumn: '1 / -1' }}>
+          <div className="card" style={{ padding: '1.5rem', gridColumn: '1 / -1' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
               <h2 style={{ fontSize: '1.2rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <FileText size={20} style={{ color: 'var(--color-info)' }} />
@@ -118,13 +124,18 @@ export default function AdminDashboard() {
             </div>
             
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1rem' }}>
-              //Dummy course reports for UI as requested 
-              {[
-                { name: 'Computer Science 101', students: 45, avgGrade: '82%' },
-                { name: 'Advanced Mathematics', students: 32, avgGrade: '75%' },
-                { name: 'Physics Mechanics', students: 28, avgGrade: '88%' }
-              ].map((course, idx) => (
-                <div key={idx} style={{ 
+              {courses.slice(0, 3).map((course, idx) => {
+                const courseAssignments = assignments.filter(a => a.courseId === course.id);
+                const courseSubmissions = submissions.filter(s => s.courseId === course.id && s.grade != null);
+                const avgGrade = courseSubmissions.length > 0
+                  ? Math.round(courseSubmissions.reduce((acc, s) => {
+                      const a = courseAssignments.find(a => a.id === s.assignmentId);
+                      return acc + calculatePercentage(s.grade!, a?.totalMarks || 100);
+                    }, 0) / courseSubmissions.length)
+                  : 0;
+
+                return (
+                <div key={course.id} style={{ 
                   padding: '1.25rem', 
                   background: 'var(--color-surface-2)', 
                   borderRadius: 'var(--radius-md)',
@@ -134,19 +145,19 @@ export default function AdminDashboard() {
                   gap: '0.75rem'
                 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                    <h3 style={{ fontWeight: 600, color: 'var(--color-text)', fontSize: '1rem' }}>{course.name}</h3>
-                    <div className="badge badge-info">{course.avgGrade} Avg</div>
+                    <h3 style={{ fontWeight: 600, color: 'var(--color-text)', fontSize: '1rem' }}>{course.title}</h3>
+                    <div className="badge badge-info">{avgGrade}% Avg</div>
                   </div>
                   <div style={{ display: 'flex', gap: '1rem', fontSize: '0.85rem', color: 'var(--color-text-secondary)' }}>
-                    <span><Users size={14} style={{ display: 'inline', marginRight: 4 }}/> {course.students} Students</span>
+                    <span><Users size={14} style={{ display: 'inline', marginRight: 4 }}/> {course.studentIds?.length || 0} Students</span>
                   </div>
                   <button className="btn btn-ghost btn-sm" style={{ width: '100%', marginTop: '0.5rem', background: 'var(--color-surface)' }}>
                     <FileText size={14} /> Export PDF Report
                   </button>
                 </div>
-              ))}
+              )})}
             </div>
-          </div> */}
+          </div>
 
           {/* Platform Announcements */}
           <div className="card" style={{ padding: '1.5rem', flex: 1 }}>

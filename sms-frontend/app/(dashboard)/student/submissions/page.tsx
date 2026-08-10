@@ -65,7 +65,7 @@ export default function StudentSubmissionsPage() {
 
   return (
     <RequireRole roles={['student']}>
-      <div className="animate-fade-in" style={{ padding: '2rem', width: '100%' }}>
+      <div className="animate-fade-in" style={{ width: '100%' }}>
 
         <PageHeader
           title="My Submissions"

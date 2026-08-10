@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -28,12 +28,13 @@ interface AssignmentFormProps {
   onClose: () => void;
   onSubmit: (data: Omit<AssignmentCreateInput, 'teacherId' | 'teacherName' | 'courseName'>) => Promise<void>;
   assignment?: Assignment | null;
+  initialDraft?: Partial<AssignmentCreateInput> | null;
   courses: Course[];
   title?: string;
   defaultCourseId?: string;
 }
 
-export default function AssignmentForm({ isOpen, onClose, onSubmit, assignment, courses, title = 'Create Assignment', defaultCourseId }: AssignmentFormProps) {
+export default function AssignmentForm({ isOpen, onClose, onSubmit, assignment, initialDraft, courses, title = 'Create Assignment', defaultCourseId }: AssignmentFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -51,13 +52,55 @@ export default function AssignmentForm({ isOpen, onClose, onSubmit, assignment, 
       maxFileSizeMb: assignment.maxFileSizeMb,
       allowLateSubmissions: assignment.allowLateSubmissions ?? true,
     } : {
+      title: initialDraft?.title || '',
+      description: initialDraft?.description || '',
+      dueDate: initialDraft?.dueDate ? initialDraft.dueDate.slice(0, 16) : '',
       status: 'draft',
-      totalMarks: 100,
+      totalMarks: initialDraft?.totalMarks || 100,
       maxFileSizeMb: 10,
-      courseId: defaultCourseId ?? '',
-      allowLateSubmissions: true,
+      courseId: initialDraft?.courseId || defaultCourseId || '',
+      allowLateSubmissions: initialDraft?.allowLateSubmissions ?? true,
     },
   });
+
+  useEffect(() => {
+    if (isOpen) {
+      if (assignment) {
+        reset({
+          title: assignment.title,
+          description: assignment.description,
+          courseId: assignment.courseId,
+          dueDate: assignment.dueDate.slice(0, 16),
+          totalMarks: assignment.totalMarks,
+          status: assignment.status,
+          maxFileSizeMb: assignment.maxFileSizeMb,
+          allowLateSubmissions: assignment.allowLateSubmissions ?? true,
+        });
+      } else if (initialDraft) {
+        reset({
+          title: initialDraft.title || '',
+          description: initialDraft.description || '',
+          dueDate: initialDraft.dueDate ? initialDraft.dueDate.slice(0, 16) : '',
+          status: 'draft',
+          totalMarks: initialDraft.totalMarks || 100,
+          maxFileSizeMb: 10,
+          courseId: initialDraft.courseId || defaultCourseId || '',
+          allowLateSubmissions: initialDraft.allowLateSubmissions ?? true,
+        });
+      } else {
+        reset({
+          status: 'draft',
+          totalMarks: 100,
+          maxFileSizeMb: 10,
+          courseId: defaultCourseId ?? '',
+          allowLateSubmissions: true,
+          title: '',
+          description: '',
+          dueDate: ''
+        });
+      }
+    }
+  }, [isOpen, assignment, initialDraft, reset, defaultCourseId]);
 
   const handleFormSubmit = async (data: Record<string, unknown>) => {
     const typedData = data as FormData;

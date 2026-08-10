@@ -5,7 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import {
   Upload, Link as LinkIcon, FileText, CheckCircle, Clock, Star,
   MessageSquare, Send, RefreshCw, X, ChevronLeft, Download, Eye,
-  Lightbulb, Paperclip, Trash2, AlertCircle, FileDown
+  Lightbulb, Paperclip, Trash2, AlertCircle, FileDown, User, Users
 } from 'lucide-react';
 import { useAuth } from '@/lib/auth/context';
 import { RequireRole } from '@/lib/auth/guards';
@@ -145,6 +145,48 @@ export default function StudentAssignmentDetailPage() {
     }
   };
 
+  const handleExportPDF = async () => {
+    if (!assignment) return;
+    try {
+      const html2pdf = (await import('html2pdf.js')).default;
+
+      const wrapper = document.createElement('div');
+      wrapper.innerHTML = `
+        <div style="padding: 20px; font-family: 'Inter', system-ui, sans-serif; color: #000; background: #fff;">
+          <h1 style="font-size: 22px; font-weight: 800; margin-bottom: 8px; color: #111;">${assignment.title}</h1>
+          <div style="font-size: 12px; color: #666; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #eaeaea;">
+            Course: ${assignment.courseName} | Instructor: ${assignment.teacherName} | Marks: ${assignment.totalMarks}
+          </div>
+          <div class="pdf-content">
+            ${assignment.description}
+          </div>
+        </div>
+        <style>
+          .pdf-content { color: #222 !important; background: #fff !important; width: 100%; word-wrap: break-word; }
+          .pdf-content h2 { font-size: 18px; font-weight: 700; margin-bottom: 12px; margin-top: 24px; color: #111 !important; }
+          .pdf-content h3 { font-size: 16px; font-weight: 700; margin-bottom: 8px; margin-top: 16px; color: #222 !important; }
+          .pdf-content p { font-size: 14px; line-height: 1.6; margin-bottom: 12px; color: #333 !important; }
+          .pdf-content ul { list-style-type: disc; margin-left: 24px; margin-bottom: 16px; color: #333 !important; }
+          .pdf-content ol { list-style-type: decimal; margin-left: 24px; margin-bottom: 16px; color: #333 !important; }
+          .pdf-content li { margin-bottom: 8px; line-height: 1.5; color: #333 !important; }
+          .pdf-content strong { font-weight: 700; color: #111 !important; }
+        </style>
+      `;
+
+      const opt = {
+        margin: 15,
+        filename: `${assignment.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.pdf`,
+        image: { type: 'jpeg', quality: 1 },
+        html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', letterRendering: true },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
+
+      html2pdf().set(opt).from(wrapper).save();
+    } catch (e) {
+      console.error("Failed to generate PDF", e);
+    }
+  };
+
   if (isLoading) {
     return (
       <RequireRole roles={['student']}>
@@ -185,17 +227,17 @@ export default function StudentAssignmentDetailPage() {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
           <div>
             {/* Breadcrumb */}
-            <p style={{ fontSize: '0.82rem', color: '#6B7280', marginBottom: '0.4rem' }}>
-              <Link href="/student" style={{ color: '#6B7280', textDecoration: 'none' }}>Student</Link>
+            <p style={{ fontSize: '0.82rem', color: 'var(--color-text-muted)', marginBottom: '0.4rem' }}>
+              <Link href="/student" style={{ color: 'var(--color-text-muted)', textDecoration: 'none' }}>Student</Link>
               {' > '}
-              <Link href="/student/assignments" style={{ color: '#6B7280', textDecoration: 'none' }}>Assignments</Link>
+              <Link href="/student/assignments" style={{ color: 'var(--color-text-muted)', textDecoration: 'none' }}>Assignments</Link>
               {' > '}
-              <span style={{ color: '#1F2937' }}>Assignment Details</span>
+              <span style={{ color: 'var(--color-text)' }}>Assignment Details</span>
             </p>
 
             {/* Title Row */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
-              <h1 style={{ fontSize: '1.6rem', fontWeight: 800, color: '#1F2937', lineHeight: 1 }}>{assignment.title}</h1>
+              <h1 style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--color-text)', lineHeight: 1 }}>{assignment.title}</h1>
               <span style={{
                 background: 'rgba(99,102,241,0.1)', color: '#4F46E5', fontSize: '0.85rem',
                 fontWeight: 700, padding: '4px 12px', borderRadius: '6px'
@@ -206,7 +248,7 @@ export default function StudentAssignmentDetailPage() {
 
             {/* Due date */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginTop: '0.5rem' }}>
-              <span style={{ fontSize: '0.85rem', color: '#6B7280', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+              <span style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
                 <Clock size={14} /> Due: {formatDate(assignment.dueDate, 'MMM d, yyyy, h:mm a')}
               </span>
               <span style={{
@@ -223,9 +265,9 @@ export default function StudentAssignmentDetailPage() {
             onClick={() => router.push('/student/assignments')}
             style={{
               display: 'flex', alignItems: 'center', gap: '0.4rem',
-              background: '#ffffff', border: '1px solid #E5E7EB',
+              background: 'var(--color-surface)', border: '1px solid var(--color-border)',
               borderRadius: '8px', padding: '0.5rem 1rem',
-              fontWeight: 600, fontSize: '0.875rem', color: '#374151',
+              fontWeight: 600, fontSize: '0.875rem', color: 'var(--color-text-secondary)',
               cursor: 'pointer', boxShadow: '0 1px 2px rgba(0,0,0,0.05)'
             }}
             className="hover:bg-gray-50"
@@ -235,32 +277,35 @@ export default function StudentAssignmentDetailPage() {
         </div>
 
         {/* Three-Column Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.1fr_300px] gap-6 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-[1.8fr_1.0fr_0.7fr] gap-8 items-start">
 
-          {/* ── LEFT: Assignment Details ── */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+          {/* ── LEFT COLUMN: Assignment Details + Description + Grade ── */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', minWidth: 0 }}>
 
             {/* Assignment Details Card */}
-            <div style={{ background: '#ffffff', borderRadius: '12px', border: '1px solid #E5E7EB', overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
-              <div style={{ padding: '1.25rem 1.5rem', borderBottom: '1px solid #E5E7EB', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <div style={{ background: 'var(--color-surface)', borderRadius: '12px', border: '1px solid var(--color-border)', overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
+              <div style={{ padding: '1.25rem 1.5rem', borderBottom: '1px solid var(--color-border)', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                 <div style={{ width: 36, height: 36, borderRadius: '10px', background: 'rgba(99,102,241,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#4F46E5' }}>
                   <FileText size={18} />
                 </div>
-                <h2 style={{ fontWeight: 800, fontSize: '1rem', color: '#1F2937' }}>Assignment Details</h2>
+                <h2 style={{ fontWeight: 800, fontSize: '1rem', color: 'var(--color-text)' }}>Assignment Details</h2>
               </div>
-              <div style={{ padding: '1.25rem 1.5rem', display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
+              <div style={{ padding: '1rem 1.25rem', display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
                 {[
-                  { label: 'Course', value: assignment.courseName },
-                  { label: 'Instructor', value: assignment.teacherName, bold: true },
-                  { label: 'Total Marks', value: String(assignment.totalMarks) },
-                  { label: 'Submission Type', value: 'Individual' },
-                  { label: 'Allowed File Types', value: assignment.allowedFileTypes?.join(', ') || 'Any format' },
-                  { label: 'Max File Size', value: `${assignment.maxFileSizeMb ?? 'Unlimited'} MB` },
-                  { label: 'Late Submission', value: allowLate ? 'Allowed (penalty may apply)' : 'Not Allowed' },
+                  { label: 'Course', value: assignment.courseName || 'Not specified', icon: <FileText size={14} /> },
+                  { label: 'Instructor', value: assignment.teacherName || 'Not specified', icon: <User size={14} /> },
+                  { label: 'Total Marks', value: String(assignment.totalMarks), icon: <Star size={14} />, highlight: true },
+                  { label: 'Submission Type', value: 'Individual', icon: <Users size={14} /> },
+                  { label: 'File Types', value: assignment.allowedFileTypes?.join(', ') || 'Any format', icon: <FileDown size={14} /> },
+                  { label: 'Max File Size', value: `${assignment.maxFileSizeMb ?? 'Unlimited'} MB`, icon: <Upload size={14} /> },
+                  { label: 'Late Submission', value: allowLate ? 'Allowed (Penalty)' : 'Not Allowed', icon: <Clock size={14} />, warn: !allowLate },
                 ].map(row => (
-                  <div key={row.label} style={{ display: 'flex', justifyContent: 'space-between', gap: '1rem', fontSize: '0.875rem' }}>
-                    <span style={{ color: '#6B7280', flexShrink: 0 }}>{row.label}</span>
-                    <span style={{ color: '#1F2937', fontWeight: row.bold ? 700 : 500, textAlign: 'right' }}>{row.value}</span>
+                  <div key={row.label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.5rem 0', borderBottom: '1px solid var(--color-border)' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: row.highlight ? '#F59E0B' : row.warn ? '#EF4444' : 'var(--color-text-muted)', flexShrink: 0 }}>
+                      {row.icon}
+                      <span style={{ fontSize: '0.78rem', fontWeight: 600 }}>{row.label}</span>
+                    </div>
+                    <span style={{ fontSize: '0.82rem', color: 'var(--color-text)', fontWeight: 700, textAlign: 'right', maxWidth: '55%', wordBreak: 'break-word' }}>{row.value}</span>
                   </div>
                 ))}
               </div>
@@ -268,18 +313,41 @@ export default function StudentAssignmentDetailPage() {
 
             {/* Description Card */}
             {assignment.description && (
-              <div style={{ background: '#ffffff', borderRadius: '12px', border: '1px solid #E5E7EB', padding: '1.25rem 1.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
-                <h3 style={{ fontWeight: 700, fontSize: '0.9rem', color: '#1F2937', marginBottom: '0.6rem' }}>Description</h3>
-                <p style={{ fontSize: '0.875rem', color: '#4B5563', lineHeight: 1.7 }}>{assignment.description}</p>
+              <div style={{ background: 'var(--color-surface)', borderRadius: '12px', border: '1px solid var(--color-border)', padding: '1.25rem 1.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                  <h3 style={{ fontWeight: 700, fontSize: '0.9rem', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', margin: 0 }}>Description</h3>
+                  <button onClick={handleExportPDF} className="btn btn-ghost btn-sm" style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', fontSize: '0.8rem', color: 'var(--color-primary)' }}>
+                    <FileDown size={14} /> Export to PDF
+                  </button>
+                </div>
+                <div
+                  id="assignment-description-content"
+                  className="assignment-rich-text"
+                  dangerouslySetInnerHTML={{ __html: assignment.description }}
+                />
+                <style dangerouslySetInnerHTML={{
+                  __html: `
+                  .assignment-rich-text { word-wrap: break-word; overflow-wrap: break-word; overflow: hidden; width: 100%; max-width: 100%; }
+                  .assignment-rich-text * { word-wrap: break-word; overflow-wrap: break-word; }
+                  .assignment-rich-text h2 { font-size: 1.15rem; font-weight: 800; color: var(--color-text); margin-bottom: 0.75rem; margin-top: 1.25rem; }
+                  .assignment-rich-text h3 { font-size: 1.05rem; font-weight: 700; color: var(--color-text); margin-bottom: 0.5rem; margin-top: 1rem; }
+                  .assignment-rich-text p { font-size: 0.95rem; color: var(--color-text-secondary); line-height: 1.7; margin-bottom: 1rem; }
+                  .assignment-rich-text ul { list-style-type: disc; margin-left: 1.5rem; margin-bottom: 1rem; color: var(--color-text-secondary); }
+                  .assignment-rich-text ol { list-style-type: decimal; margin-left: 1.5rem; margin-bottom: 1rem; color: var(--color-text-secondary); }
+                  .assignment-rich-text li { margin-bottom: 0.5rem; line-height: 1.6; }
+                  .assignment-rich-text strong { color: var(--color-text); font-weight: 700; }
+                  .assignment-rich-text h2:first-child, .assignment-rich-text h3:first-child, .assignment-rich-text p:first-child { margin-top: 0; }
+                  .assignment-rich-text *:last-child { margin-bottom: 0; }
+                `}} />
               </div>
             )}
 
             {/* Submission Status / Grade Card (if already submitted) */}
             {submission && !isEditing && (
               <div style={{
-                background: submission.status === 'graded' ? 'rgba(16,185,129,0.05)' : '#ffffff',
+                background: submission.status === 'graded' ? 'rgba(16,185,129,0.05)' : 'var(--color-surface)',
                 borderRadius: '12px',
-                border: `1px solid ${submission.status === 'graded' ? 'rgba(16,185,129,0.3)' : '#E5E7EB'}`,
+                border: `1px solid ${submission.status === 'graded' ? 'rgba(16,185,129,0.3)' : 'var(--color-border)'}`,
                 padding: '1.25rem 1.5rem',
                 boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
               }}>
@@ -296,7 +364,7 @@ export default function StudentAssignmentDetailPage() {
                     {canEdit && (
                       <button
                         onClick={startEditing}
-                        style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', background: '#F3F4F6', border: 'none', borderRadius: '6px', padding: '4px 10px', fontSize: '0.8rem', fontWeight: 600, color: '#374151', cursor: 'pointer' }}
+                        style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', background: 'var(--color-surface-3)', border: 'none', borderRadius: '6px', padding: '4px 10px', fontSize: '0.8rem', fontWeight: 600, color: 'var(--color-text-secondary)', cursor: 'pointer' }}
                         className="hover:bg-gray-200"
                       >
                         <RefreshCw size={12} /> Update
@@ -311,36 +379,36 @@ export default function StudentAssignmentDetailPage() {
                       Grade: {submission.grade} / {assignment.totalMarks} ({calculatePercentage(submission.grade, assignment.totalMarks)}%)
                     </p>
                     {submission.feedback && (
-                      <p style={{ marginTop: '0.5rem', fontSize: '0.875rem', color: '#4B5563', lineHeight: 1.6 }}>{submission.feedback}</p>
+                      <p style={{ marginTop: '0.5rem', fontSize: '0.875rem', color: 'var(--color-text-secondary)', lineHeight: 1.6 }}>{submission.feedback}</p>
                     )}
                   </div>
                 )}
 
                 {submission.textContent && (
                   <div style={{ marginBottom: '0.75rem' }}>
-                    <p style={{ fontSize: '0.75rem', fontWeight: 600, color: '#9CA3AF', marginBottom: '0.35rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Your Notes</p>
-                    <p style={{ fontSize: '0.875rem', color: '#4B5563', lineHeight: 1.6, background: '#F8FAFC', padding: '0.75rem', borderRadius: '8px' }}>{submission.textContent}</p>
+                    <p style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--color-text-muted)', marginBottom: '0.35rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Your Notes</p>
+                    <p style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)', lineHeight: 1.6, background: 'var(--color-surface-2)', padding: '0.75rem', borderRadius: '8px' }}>{submission.textContent}</p>
                   </div>
                 )}
               </div>
             )}
           </div>
 
-          {/* ── CENTER: Upload & Submit ── */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+          {/* ── MIDDLE COLUMN: Submission Form / Submitted File / History ── */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', minWidth: 0 }}>
 
             {/* Upload Your Submission */}
             {(canSubmit || isEditing) && (
-              <div style={{ background: '#ffffff', borderRadius: '12px', border: '1px solid #E5E7EB', overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
-                <div style={{ padding: '1.25rem 1.5rem', borderBottom: '1px solid #E5E7EB', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div style={{ background: 'var(--color-surface)', borderRadius: '12px', border: '1px solid var(--color-border)', overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
+                <div style={{ padding: '1.25rem 1.5rem', borderBottom: '1px solid var(--color-border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                     <div style={{ width: 36, height: 36, borderRadius: '10px', background: 'rgba(99,102,241,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#4F46E5' }}>
                       <Upload size={18} />
                     </div>
-                    <h2 style={{ fontWeight: 800, fontSize: '1rem', color: '#1F2937' }}>{isEditing ? 'Update Your Submission' : 'Upload Your Submission'}</h2>
+                    <h2 style={{ fontWeight: 800, fontSize: '1rem', color: 'var(--color-text)' }}>{isEditing ? 'Update Your Submission' : 'Upload Your Submission'}</h2>
                   </div>
                   {isEditing && (
-                    <button onClick={() => setIsEditing(false)} style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', background: 'none', border: 'none', color: '#6B7280', cursor: 'pointer', fontSize: '0.85rem' }}>
+                    <button onClick={() => setIsEditing(false)} style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', background: 'none', border: 'none', color: 'var(--color-text-muted)', cursor: 'pointer', fontSize: '0.85rem' }}>
                       <X size={14} /> Cancel
                     </button>
                   )}
@@ -373,12 +441,12 @@ export default function StudentAssignmentDetailPage() {
                       onDrop={handleDrop}
                       onClick={() => fileInputRef.current?.click()}
                       style={{
-                        border: `2px dashed ${isDragging ? '#4F46E5' : selectedFile ? '#10B981' : fileError ? '#EF4444' : '#D1D5DB'}`,
+                        border: `2px dashed ${isDragging ? '#4F46E5' : selectedFile ? '#10B981' : fileError ? '#EF4444' : 'var(--color-border)'}`,
                         borderRadius: '10px',
                         padding: '2rem',
                         textAlign: 'center',
                         cursor: 'pointer',
-                        background: isDragging ? 'rgba(99,102,241,0.05)' : selectedFile ? 'rgba(16,185,129,0.05)' : '#F8FAFC',
+                        background: isDragging ? 'rgba(99,102,241,0.05)' : selectedFile ? 'rgba(16,185,129,0.05)' : 'var(--color-surface-2)',
                         transition: 'all 0.2s ease'
                       }}
                     >
@@ -388,14 +456,14 @@ export default function StudentAssignmentDetailPage() {
                       {selectedFile ? (
                         <div>
                           <p style={{ fontSize: '0.9rem', fontWeight: 700, color: '#10B981' }}>{selectedFile.name}</p>
-                          <p style={{ fontSize: '0.78rem', color: '#6B7280', marginTop: '0.25rem' }}>{(selectedFile.size / 1024 / 1024).toFixed(2)} MB · Click to change</p>
+                          <p style={{ fontSize: '0.78rem', color: 'var(--color-text-muted)', marginTop: '0.25rem' }}>{(selectedFile.size / 1024 / 1024).toFixed(2)} MB · Click to change</p>
                         </div>
                       ) : (
                         <div>
-                          <p style={{ fontSize: '0.9rem', fontWeight: 600, color: '#374151' }}>Drag & drop your file here</p>
-                          <p style={{ fontSize: '0.82rem', color: '#9CA3AF', marginBottom: '0.75rem' }}>or</p>
-                          <span style={{ background: '#4F46E5', color: '#fff', fontWeight: 700, fontSize: '0.85rem', padding: '8px 20px', borderRadius: '8px', display: 'inline-block' }}>Browse Files</span>
-                          <p style={{ fontSize: '0.75rem', color: '#9CA3AF', marginTop: '0.75rem' }}>
+                          <p style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--color-text-secondary)' }}>Drag & drop your file here</p>
+                          <p style={{ fontSize: '0.82rem', color: 'var(--color-text-muted)', marginBottom: '0.75rem' }}>or</p>
+                          <span style={{ background: '#4F46E5', color: 'var(--color-surface)', fontWeight: 700, fontSize: '0.85rem', padding: '8px 20px', borderRadius: '8px', display: 'inline-block' }}>Browse Files</span>
+                          <p style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', marginTop: '0.75rem' }}>
                             Supported: {assignment.allowedFileTypes?.join(', ') || 'Any format'} &nbsp;|&nbsp; Max size: {assignment.maxFileSizeMb ?? 'Unlimited'} MB
                           </p>
                         </div>
@@ -406,12 +474,12 @@ export default function StudentAssignmentDetailPage() {
 
                     {/* Uploaded File display */}
                     {selectedFile && (
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#F8FAFC', border: '1px solid #E5E7EB', borderRadius: '8px', padding: '0.85rem 1rem' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'var(--color-surface-2)', border: '1px solid var(--color-border)', borderRadius: '8px', padding: '0.85rem 1rem' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                           <div style={{ color: '#EF4444' }}><FileText size={22} fill="#FCA5A5" strokeWidth={1.5} /></div>
                           <div>
-                            <p style={{ fontWeight: 700, fontSize: '0.875rem', color: '#1F2937' }}>{selectedFile.name}</p>
-                            <p style={{ fontSize: '0.75rem', color: '#6B7280' }}>{(selectedFile.size / 1024 / 1024).toFixed(2)} MB</p>
+                            <p style={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--color-text)' }}>{selectedFile.name}</p>
+                            <p style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>{(selectedFile.size / 1024 / 1024).toFixed(2)} MB</p>
                           </div>
                         </div>
                         <button type="button" onClick={() => { setSelectedFile(null); if (fileInputRef.current) fileInputRef.current.value = ''; }} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#EF4444', padding: 4 }}>
@@ -422,30 +490,30 @@ export default function StudentAssignmentDetailPage() {
 
                     {/* Comment textarea */}
                     <div>
-                      <label style={{ fontSize: '0.875rem', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '0.5rem' }}>Add Comment (Optional)</label>
+                      <label style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-text-secondary)', display: 'block', marginBottom: '0.5rem' }}>Add Comment (Optional)</label>
                       <textarea
                         placeholder="Add any notes for your instructor..."
-                        style={{ width: '100%', borderRadius: '8px', border: '1px solid #D1D5DB', padding: '0.75rem', fontSize: '0.875rem', color: '#1F2937', resize: 'vertical', minHeight: 80, outline: 'none', boxSizing: 'border-box' }}
+                        style={{ width: '100%', borderRadius: '8px', border: '1px solid var(--color-border)', padding: '0.75rem', fontSize: '0.875rem', color: 'var(--color-text)', resize: 'vertical', minHeight: 80, outline: 'none', boxSizing: 'border-box' }}
                         {...register('textContent')}
                         maxLength={500}
                       />
-                      <p style={{ fontSize: '0.75rem', color: '#9CA3AF', textAlign: 'right', marginTop: '0.25rem' }}>{textContent.length} / 500</p>
+                      <p style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', textAlign: 'right', marginTop: '0.25rem' }}>{textContent.length} / 500</p>
                     </div>
 
                     {/* Links */}
                     <div>
-                      <label style={{ fontSize: '0.875rem', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '0.5rem' }}>
+                      <label style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-text-secondary)', display: 'block', marginBottom: '0.5rem' }}>
                         <LinkIcon size={13} style={{ display: 'inline', marginRight: 4 }} />
                         Links (one per line)
                       </label>
-                      <textarea style={{ width: '100%', borderRadius: '8px', border: '1px solid #D1D5DB', padding: '0.75rem', fontSize: '0.875rem', color: '#1F2937', resize: 'vertical', minHeight: 56, outline: 'none', boxSizing: 'border-box' }} placeholder="https://github.com/..." {...register('links')} />
+                      <textarea style={{ width: '100%', borderRadius: '8px', border: '1px solid var(--color-border)', padding: '0.75rem', fontSize: '0.875rem', color: 'var(--color-text)', resize: 'vertical', minHeight: 56, outline: 'none', boxSizing: 'border-box' }} placeholder="https://github.com/..." {...register('links')} />
                     </div>
 
                     {/* Action Buttons */}
                     <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.25rem' }}>
                       <button
                         type="button"
-                        style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', flex: 1, padding: '0.7rem', background: '#ffffff', border: '1px solid #D1D5DB', borderRadius: '8px', fontWeight: 600, fontSize: '0.875rem', color: '#374151', cursor: 'pointer' }}
+                        style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', flex: 1, padding: '0.7rem', background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: '8px', fontWeight: 600, fontSize: '0.875rem', color: 'var(--color-text-secondary)', cursor: 'pointer' }}
                         className="hover:bg-gray-50"
                       >
                         <FileDown size={15} /> Save as Draft
@@ -453,7 +521,7 @@ export default function StudentAssignmentDetailPage() {
                       <button
                         type="submit"
                         disabled={isSubmitting || !!fileError}
-                        style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', flex: 2, padding: '0.7rem', background: isSubmitting ? '#6B7280' : '#4F46E5', border: 'none', borderRadius: '8px', fontWeight: 700, fontSize: '0.875rem', color: '#ffffff', cursor: isSubmitting ? 'not-allowed' : 'pointer', boxShadow: '0 4px 12px rgba(79,70,229,0.3)' }}
+                        style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', flex: 2, padding: '0.7rem', background: isSubmitting ? 'var(--color-text-muted)' : '#4F46E5', border: 'none', borderRadius: '8px', fontWeight: 700, fontSize: '0.875rem', color: 'var(--color-surface)', cursor: isSubmitting ? 'not-allowed' : 'pointer', boxShadow: '0 4px 12px rgba(79,70,229,0.3)' }}
                         className="hover:bg-indigo-600"
                       >
                         <Send size={15} /> {isSubmitting ? 'Submitting...' : isEditing ? 'Update Submission' : 'Submit Assignment'}
@@ -466,14 +534,14 @@ export default function StudentAssignmentDetailPage() {
 
             {/* If already submitted but can't edit - show current submission file */}
             {submission && !isEditing && submission.fileName && (
-              <div style={{ background: '#ffffff', borderRadius: '12px', border: '1px solid #E5E7EB', padding: '1.25rem 1.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
-                <h3 style={{ fontWeight: 700, fontSize: '0.9rem', color: '#1F2937', marginBottom: '0.85rem' }}>Submitted File</h3>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#F8FAFC', border: '1px solid #E5E7EB', borderRadius: '8px', padding: '0.85rem 1rem' }}>
+              <div style={{ background: 'var(--color-surface)', borderRadius: '12px', border: '1px solid var(--color-border)', padding: '1.25rem 1.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
+                <h3 style={{ fontWeight: 700, fontSize: '0.9rem', color: 'var(--color-text)', marginBottom: '0.85rem' }}>Submitted File</h3>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'var(--color-surface-2)', border: '1px solid var(--color-border)', borderRadius: '8px', padding: '0.85rem 1rem' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                     <div style={{ color: '#EF4444' }}><FileText size={22} fill="#FCA5A5" strokeWidth={1.5} /></div>
                     <div>
-                      <p style={{ fontWeight: 700, fontSize: '0.875rem', color: '#1F2937' }}>{submission.fileName}</p>
-                      <p style={{ fontSize: '0.75rem', color: '#6B7280' }}>Submitted {submission.submittedAt ? formatDate(submission.submittedAt, 'MMM d, yyyy h:mm a') : ''}</p>
+                      <p style={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--color-text)' }}>{submission.fileName}</p>
+                      <p style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>Submitted {submission.submittedAt ? formatDate(submission.submittedAt, 'MMM d, yyyy h:mm a') : ''}</p>
                     </div>
                   </div>
                   <div style={{ display: 'flex', gap: '0.5rem' }}>
@@ -482,7 +550,7 @@ export default function StudentAssignmentDetailPage() {
                         <Eye size={16} />
                       </button>
                     )}
-                    <button onClick={startEditing} style={{ width: 34, height: 34, borderRadius: '6px', background: '#F3F4F6', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#374151' }}>
+                    <button onClick={startEditing} style={{ width: 34, height: 34, borderRadius: '6px', background: 'var(--color-surface-3)', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'var(--color-text-secondary)' }}>
                       <RefreshCw size={15} />
                     </button>
                   </div>
@@ -492,32 +560,32 @@ export default function StudentAssignmentDetailPage() {
 
             {/* Submission History Table */}
             {submission && (
-              <div style={{ background: '#ffffff', borderRadius: '12px', border: '1px solid #E5E7EB', overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
-                <div style={{ padding: '1.25rem 1.5rem', borderBottom: '1px solid #E5E7EB' }}>
-                  <h3 style={{ fontWeight: 800, fontSize: '1rem', color: '#1F2937' }}>Submission History</h3>
+              <div style={{ background: 'var(--color-surface)', borderRadius: '12px', border: '1px solid var(--color-border)', overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
+                <div style={{ padding: '1.25rem 1.5rem', borderBottom: '1px solid var(--color-border)' }}>
+                  <h3 style={{ fontWeight: 800, fontSize: '1rem', color: 'var(--color-text)' }}>Submission History</h3>
                 </div>
                 <div style={{ overflowX: 'auto' }}>
                   <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.875rem', minWidth: '600px' }}>
                     <thead>
                       <tr>
                         {['Attempt', 'Submitted On', 'File', 'Size', 'Status', 'Marks', 'Feedback', 'Action'].map(h => (
-                          <th key={h} style={{ padding: '0.75rem 1rem', textAlign: 'left', fontSize: '0.8rem', fontWeight: 700, color: '#6B7280', borderBottom: '1px solid #E5E7EB', background: '#F8FAFC' }}>{h}</th>
+                          <th key={h} style={{ padding: '0.75rem 1rem', textAlign: 'left', fontSize: '0.8rem', fontWeight: 700, color: 'var(--color-text-muted)', borderBottom: '1px solid var(--color-border)', background: 'var(--color-surface-2)' }}>{h}</th>
                         ))}
                       </tr>
                     </thead>
                     <tbody>
-                      <tr style={{ borderBottom: '1px solid #F3F4F6' }}>
-                        <td style={{ padding: '0.9rem 1rem', fontWeight: 700, color: '#1F2937' }}>1</td>
-                        <td style={{ padding: '0.9rem 1rem', color: '#374151' }}>
+                      <tr style={{ borderBottom: '1px solid var(--color-surface-3)' }}>
+                        <td style={{ padding: '0.9rem 1rem', fontWeight: 700, color: 'var(--color-text)' }}>1</td>
+                        <td style={{ padding: '0.9rem 1rem', color: 'var(--color-text-secondary)' }}>
                           {submission.submittedAt ? formatDate(submission.submittedAt, 'MMM d, yyyy, h:mm a') : '-'}
                         </td>
                         <td style={{ padding: '0.9rem 1rem' }}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
                             <FileText size={14} color="#EF4444" />
-                            <span style={{ color: '#374151' }}>{submission.fileName || '-'}</span>
+                            <span style={{ color: 'var(--color-text-secondary)' }}>{submission.fileName || '-'}</span>
                           </div>
                         </td>
-                        <td style={{ padding: '0.9rem 1rem', color: '#6B7280' }}>-</td>
+                        <td style={{ padding: '0.9rem 1rem', color: 'var(--color-text-muted)' }}>-</td>
                         <td style={{ padding: '0.9rem 1rem' }}>
                           <span style={{
                             background: submission.status === 'graded' ? 'rgba(16,185,129,0.15)' : submission.status === 'submitted' ? 'rgba(99,102,241,0.15)' : 'rgba(245,158,11,0.15)',
@@ -527,20 +595,20 @@ export default function StudentAssignmentDetailPage() {
                             {submission.status === 'submitted' ? 'Submitted' : submission.status}
                           </span>
                         </td>
-                        <td style={{ padding: '0.9rem 1rem', color: '#374151', fontWeight: submission.grade != null ? 700 : 400 }}>
+                        <td style={{ padding: '0.9rem 1rem', color: 'var(--color-text-secondary)', fontWeight: submission.grade != null ? 700 : 400 }}>
                           {submission.grade != null ? `${submission.grade} / ${assignment.totalMarks}` : '–'}
                         </td>
-                        <td style={{ padding: '0.9rem 1rem', color: '#6B7280' }}>
+                        <td style={{ padding: '0.9rem 1rem', color: 'var(--color-text-muted)' }}>
                           {submission.feedback ? submission.feedback.substring(0, 30) + '…' : '–'}
                         </td>
                         <td style={{ padding: '0.9rem 1rem' }}>
                           <div style={{ display: 'flex', gap: '0.5rem' }}>
                             {submission.fileUrl && (
-                              <button onClick={() => viewSecureFile(submission.fileUrl!)} style={{ width: 30, height: 30, borderRadius: '6px', background: '#EEF2FF', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#4F46E5' }}>
+                              <button onClick={() => viewSecureFile(submission.fileUrl!)} style={{ width: 30, height: 30, borderRadius: '6px', background: 'var(--color-primary-subtle)', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'var(--color-primary)' }}>
                                 <Eye size={14} />
                               </button>
                             )}
-                            <button style={{ width: 30, height: 30, borderRadius: '6px', background: '#F0FDF4', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#10B981' }}>
+                            <button style={{ width: 30, height: 30, borderRadius: '6px', background: 'var(--color-success-subtle)', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'var(--color-success)' }}>
                               <Download size={14} />
                             </button>
                           </div>
@@ -553,19 +621,19 @@ export default function StudentAssignmentDetailPage() {
             )}
           </div>
 
-          {/* ── RIGHT SIDEBAR ── */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+          {/* ── RIGHT COLUMN: Instructions + Deadline + Comments ── */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', minWidth: 0 }}>
 
             {/* Instructions Card */}
-            <div style={{ background: '#ffffff', borderRadius: '12px', border: '1px solid #E5E7EB', overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
-              <div style={{ padding: '1rem 1.25rem', borderBottom: '1px solid #E5E7EB', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <div style={{ background: 'var(--color-surface)', borderRadius: '12px', border: '1px solid var(--color-border)', overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
+              <div style={{ padding: '1rem 1.25rem', borderBottom: '1px solid var(--color-border)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <Lightbulb size={16} color="#F59E0B" />
-                <h3 style={{ fontWeight: 800, fontSize: '0.95rem', color: '#1F2937' }}>Instructions</h3>
+                <h3 style={{ fontWeight: 800, fontSize: '0.95rem', color: 'var(--color-text)' }}>Instructions</h3>
               </div>
               <ul style={{ padding: '1rem 1.25rem', margin: 0, display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
                 {instructions.map((inst, i) => (
-                  <li key={i} style={{ display: 'flex', gap: '0.5rem', fontSize: '0.82rem', color: '#4B5563', lineHeight: 1.5 }}>
-                    <span style={{ color: '#9CA3AF', flexShrink: 0 }}>•</span>
+                  <li key={i} style={{ display: 'flex', gap: '0.5rem', fontSize: '0.82rem', color: 'var(--color-text-secondary)', lineHeight: 1.5 }}>
+                    <span style={{ color: 'var(--color-text-muted)', flexShrink: 0 }}>•</span>
                     {inst}
                   </li>
                 ))}
@@ -574,10 +642,10 @@ export default function StudentAssignmentDetailPage() {
 
             {/* Reference Files Card
             {assignment.attachmentUrl && (
-              <div style={{ background: '#ffffff', borderRadius: '12px', border: '1px solid #E5E7EB', overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
-                <div style={{ padding: '1rem 1.25rem', borderBottom: '1px solid #E5E7EB', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <Paperclip size={16} color="#6B7280" />
-                  <h3 style={{ fontWeight: 800, fontSize: '0.95rem', color: '#1F2937' }}>Reference Files</h3>
+              <div style={{ background: 'var(--color-surface)', borderRadius: '12px', border: '1px solid var(--color-border)', overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
+                <div style={{ padding: '1rem 1.25rem', borderBottom: '1px solid var(--color-border)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <Paperclip size={16} color="var(--color-text-muted)" />
+                  <h3 style={{ fontWeight: 800, fontSize: '0.95rem', color: 'var(--color-text)' }}>Reference Files</h3>
                 </div>
                 <div style={{ padding: '1rem 1.25rem', display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
                   {[{ name: 'Assignment Guidelines.pdf', size: '512 KB', color: '#EF4444' }].map((f, i) => (
@@ -585,11 +653,11 @@ export default function StudentAssignmentDetailPage() {
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                         <FileText size={16} color={f.color} fill={`${f.color}33`} strokeWidth={1.5} />
                         <div>
-                          <p style={{ fontSize: '0.82rem', fontWeight: 600, color: '#1F2937' }}>{f.name}</p>
-                          <p style={{ fontSize: '0.72rem', color: '#9CA3AF' }}>{f.size}</p>
+                          <p style={{ fontSize: '0.82rem', fontWeight: 600, color: 'var(--color-text)' }}>{f.name}</p>
+                          <p style={{ fontSize: '0.72rem', color: 'var(--color-text-muted)' }}>{f.size}</p>
                         </div>
                       </div>
-                      <a href={assignment.attachmentUrl!} target="_blank" rel="noreferrer" style={{ color: '#6B7280', display: 'flex', alignItems: 'center' }}>
+                      <a href={assignment.attachmentUrl!} target="_blank" rel="noreferrer" style={{ color: 'var(--color-text-muted)', display: 'flex', alignItems: 'center' }}>
                         <Download size={15} />
                       </a>
                     </div>
@@ -599,13 +667,13 @@ export default function StudentAssignmentDetailPage() {
             )} */}
 
             {/* Deadline Sidebar Card */}
-            <div style={{ background: '#ffffff', borderRadius: '12px', border: '1px solid #E5E7EB', overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
-              <div style={{ padding: '1rem 1.25rem', borderBottom: '1px solid #E5E7EB' }}>
-                <p style={{ fontSize: '0.72rem', fontWeight: 700, color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.08em' }}>DEADLINE</p>
-                <p style={{ fontSize: '1.4rem', fontWeight: 800, color: isOverdue ? '#EF4444' : '#1F2937', lineHeight: 1.2, marginTop: '0.25rem' }}>
+            <div style={{ background: 'var(--color-surface)', borderRadius: '12px', border: '1px solid var(--color-border)', overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
+              <div style={{ padding: '1rem 1.25rem', borderBottom: '1px solid var(--color-border)' }}>
+                <p style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>DEADLINE</p>
+                <p style={{ fontSize: '1.4rem', fontWeight: 800, color: isOverdue ? '#EF4444' : 'var(--color-text)', lineHeight: 1.2, marginTop: '0.25rem' }}>
                   {formatDate(assignment.dueDate, 'MMM d')}
                 </p>
-                <p style={{ fontSize: '0.8rem', color: '#6B7280' }}>{formatDate(assignment.dueDate, 'h:mm a, yyyy')}</p>
+                <p style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>{formatDate(assignment.dueDate, 'h:mm a, yyyy')}</p>
               </div>
               <div style={{ padding: '0.75rem 1.25rem' }}>
                 <div style={{ background: isOverdue ? 'rgba(239,68,68,0.1)' : 'rgba(245,158,11,0.1)', borderRadius: '6px', padding: '0.5rem 0.75rem', textAlign: 'center' }}>
@@ -619,10 +687,10 @@ export default function StudentAssignmentDetailPage() {
 
 
             {/* Class Discussion */}
-            <div style={{ background: '#ffffff', borderRadius: '12px', border: '1px solid #E5E7EB', overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
-              <div style={{ padding: '1rem 1.25rem', borderBottom: '1px solid #E5E7EB', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <div style={{ background: 'var(--color-surface)', borderRadius: '12px', border: '1px solid var(--color-border)', overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
+              <div style={{ padding: '1rem 1.25rem', borderBottom: '1px solid var(--color-border)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <MessageSquare size={16} color="#4F46E5" />
-                <h3 style={{ fontWeight: 800, fontSize: '0.95rem', color: '#1F2937' }}>Class Comments</h3>
+                <h3 style={{ fontWeight: 800, fontSize: '0.95rem', color: 'var(--color-text)' }}>Class Comments</h3>
               </div>
               <div style={{ padding: '1rem 1.25rem' }}>
                 <AssignmentDiscussion assignmentId={id} />

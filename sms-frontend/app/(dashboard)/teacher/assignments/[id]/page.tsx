@@ -83,28 +83,28 @@ export default function TeacherAssignmentDetailPage() {
         {/* Dashboard Metrics Row */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
           
-          <div style={{ background: '#ffffff', border: '1px solid #E5E7EB', borderRadius: '12px', padding: '1.25rem 1.5rem', display: 'flex', flexDirection: 'column', gap: '0.75rem', boxShadow: '0 1px 3px rgba(0,0,0,0.02)' }} className="transition-shadow hover:shadow-md">
-            <p style={{ fontSize: '0.75rem', color: '#6B7280', fontWeight: 700, letterSpacing: '0.05em', textTransform: 'uppercase' }}>Assignment Info</p>
+          <div style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: '12px', padding: '1.25rem 1.5rem', display: 'flex', flexDirection: 'column', gap: '0.75rem', boxShadow: '0 1px 3px rgba(0,0,0,0.02)' }} className="transition-shadow hover:shadow-md">
+            <p style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', fontWeight: 700, letterSpacing: '0.05em', textTransform: 'uppercase' }}>Assignment Info</p>
             <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
               <AssignmentStatusBadge status={assignment.status} dueDate={assignment.dueDate} />
-              <span style={{ fontSize: '0.95rem', fontWeight: 700, color: '#1F2937' }}>{assignment.totalMarks} Marks</span>
+              <span style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--color-text)' }}>{assignment.totalMarks} Marks</span>
             </div>
-            <p style={{ fontSize: '0.8rem', color: '#6B7280', display: 'flex', alignItems: 'center', gap: '0.35rem', marginTop: 'auto' }}>
+            <p style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)', display: 'flex', alignItems: 'center', gap: '0.35rem', marginTop: 'auto' }}>
               <Clock size={13} /> Due: {formatDate(assignment.dueDate, 'MMM d, yyyy h:mm a')}
             </p>
           </div>
 
-          <div style={{ background: '#ffffff', border: '1px solid #E5E7EB', borderRadius: '12px', padding: '1.25rem 1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', boxShadow: '0 1px 3px rgba(0,0,0,0.02)' }} className="transition-shadow hover:shadow-md">
+          <div style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: '12px', padding: '1.25rem 1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', boxShadow: '0 1px 3px rgba(0,0,0,0.02)' }} className="transition-shadow hover:shadow-md">
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-              <p style={{ fontSize: '0.75rem', color: '#6B7280', fontWeight: 700, letterSpacing: '0.05em', textTransform: 'uppercase' }}>Total Submissions</p>
-              <p style={{ fontSize: '1.75rem', fontWeight: 800, color: '#1F2937', lineHeight: 1 }}>{submissions.length}</p>
+              <p style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', fontWeight: 700, letterSpacing: '0.05em', textTransform: 'uppercase' }}>Total Submissions</p>
+              <p style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--color-text)', lineHeight: 1 }}>{submissions.length}</p>
             </div>
-            <div style={{ width: 40, height: 40, background: '#F3F4F6', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#4B5563' }}>
+            <div style={{ width: 40, height: 40, background: 'var(--color-surface-3)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-text-secondary)' }}>
               <Users size={20} />
             </div>
           </div>
 
-          <div style={{ background: '#ffffff', border: '1px solid rgba(245, 158, 11, 0.2)', borderRadius: '12px', padding: '1.25rem 1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', boxShadow: '0 1px 3px rgba(245, 158, 11, 0.05)' }} className="transition-shadow hover:shadow-md">
+          <div style={{ background: 'var(--color-surface)', border: '1px solid rgba(245, 158, 11, 0.2)', borderRadius: '12px', padding: '1.25rem 1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', boxShadow: '0 1px 3px rgba(245, 158, 11, 0.05)' }} className="transition-shadow hover:shadow-md">
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
               <p style={{ fontSize: '0.75rem', color: '#D97706', fontWeight: 700, letterSpacing: '0.05em', textTransform: 'uppercase' }}>Needs Grading</p>
               <p style={{ fontSize: '1.75rem', fontWeight: 800, color: '#D97706', lineHeight: 1 }}>{pendingCount}</p>
@@ -114,7 +114,7 @@ export default function TeacherAssignmentDetailPage() {
             </div>
           </div>
 
-          <div style={{ background: '#ffffff', border: '1px solid rgba(16, 185, 129, 0.2)', borderRadius: '12px', padding: '1.25rem 1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', boxShadow: '0 1px 3px rgba(16, 185, 129, 0.05)' }} className="transition-shadow hover:shadow-md">
+          <div style={{ background: 'var(--color-surface)', border: '1px solid rgba(16, 185, 129, 0.2)', borderRadius: '12px', padding: '1.25rem 1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', boxShadow: '0 1px 3px rgba(16, 185, 129, 0.05)' }} className="transition-shadow hover:shadow-md">
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
               <p style={{ fontSize: '0.75rem', color: '#059669', fontWeight: 700, letterSpacing: '0.05em', textTransform: 'uppercase' }}>Graded</p>
               <p style={{ fontSize: '1.75rem', fontWeight: 800, color: '#059669', lineHeight: 1 }}>{gradedCount}</p>
@@ -126,42 +126,42 @@ export default function TeacherAssignmentDetailPage() {
         </div>
 
         {/* Submissions Data Table */}
-        <div style={{ background: '#ffffff', border: '1px solid #E5E7EB', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.02)', overflow: 'hidden' }}>
-          <div style={{ padding: '1.5rem', borderBottom: '1px solid #F3F4F6' }}>
-            <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#1F2937' }}>Student Submissions Tracker</h3>
-            <p style={{ fontSize: '0.85rem', color: '#6B7280', marginTop: '0.25rem' }}>Review attachments and provide grades for student submissions.</p>
+        <div style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.02)', overflow: 'hidden' }}>
+          <div style={{ padding: '1.5rem', borderBottom: '1px solid var(--color-surface-3)' }}>
+            <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--color-text)' }}>Student Submissions Tracker</h3>
+            <p style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', marginTop: '0.25rem' }}>Review attachments and provide grades for student submissions.</p>
           </div>
 
           {submissions.length === 0 ? (
             <div style={{ padding: '4rem 2rem', textAlign: 'center' }}>
-              <FileText size={48} style={{ color: '#D1D5DB', margin: '0 auto 1rem' }} />
-              <p style={{ color: '#4B5563', fontWeight: 600 }}>No students have submitted yet.</p>
+              <FileText size={48} style={{ color: 'var(--color-border)', margin: '0 auto 1rem' }} />
+              <p style={{ color: 'var(--color-text-secondary)', fontWeight: 600 }}>No students have submitted yet.</p>
             </div>
           ) : (
             <div style={{ overflowX: 'auto' }}>
               <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: 800 }}>
-                <thead style={{ background: '#F9FAFB', borderBottom: '1px solid #E5E7EB' }}>
+                <thead style={{ background: 'var(--color-surface-2)', borderBottom: '1px solid var(--color-border)' }}>
                   <tr>
-                    <th style={{ padding: '1rem 1.5rem', fontWeight: 700, fontSize: '0.75rem', color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Student</th>
-                    <th style={{ padding: '1rem 1.5rem', fontWeight: 700, fontSize: '0.75rem', color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Submission Status</th>
-                    <th style={{ padding: '1rem 1.5rem', fontWeight: 700, fontSize: '0.75rem', color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Date Submitted</th>
-                    <th style={{ padding: '1rem 1.5rem', fontWeight: 700, fontSize: '0.75rem', color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Attachment</th>
-                    <th style={{ padding: '1rem 1.5rem', fontWeight: 700, fontSize: '0.75rem', color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.05em', textAlign: 'right' }}>Grade & Action</th>
+                    <th style={{ padding: '1rem 1.5rem', fontWeight: 700, fontSize: '0.75rem', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Student</th>
+                    <th style={{ padding: '1rem 1.5rem', fontWeight: 700, fontSize: '0.75rem', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Submission Status</th>
+                    <th style={{ padding: '1rem 1.5rem', fontWeight: 700, fontSize: '0.75rem', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Date Submitted</th>
+                    <th style={{ padding: '1rem 1.5rem', fontWeight: 700, fontSize: '0.75rem', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Attachment</th>
+                    <th style={{ padding: '1rem 1.5rem', fontWeight: 700, fontSize: '0.75rem', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', textAlign: 'right' }}>Grade & Action</th>
                   </tr>
                 </thead>
-                <tbody style={{ background: '#ffffff' }}>
+                <tbody style={{ background: 'var(--color-surface)' }}>
                   {submissions.map((s, index) => (
-                    <tr key={s.id} style={{ borderBottom: '1px solid #F3F4F6' }} className="hover:bg-gray-50 transition-colors">
+                    <tr key={s.id} style={{ borderBottom: '1px solid var(--color-surface-3)' }} className="hover:bg-gray-50 transition-colors">
                       
                       {/* Student Info */}
                       <td style={{ padding: '1.25rem 1.5rem' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
-                          <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'linear-gradient(135deg, #6366F1, #8B5CF6)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: '0.85rem', flexShrink: 0 }}>
+                          <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'var(--color-primary)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: '0.85rem', flexShrink: 0 }}>
                             {getInitials(s.studentName.split(' ')[0], s.studentName.split(' ')[1] ?? '')}
                           </div>
                           <div>
-                            <p style={{ fontWeight: 600, fontSize: '0.9rem', color: '#1F2937' }}>{s.studentName}</p>
-                            <p style={{ fontSize: '0.75rem', color: '#6B7280' }}>{s.studentEmail}</p>
+                            <p style={{ fontWeight: 600, fontSize: '0.9rem', color: 'var(--color-text)' }}>{s.studentName}</p>
+                            <p style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>{s.studentEmail}</p>
                           </div>
                         </div>
                       </td>
@@ -176,7 +176,7 @@ export default function TeacherAssignmentDetailPage() {
                       </td>
 
                       {/* Date */}
-                      <td style={{ padding: '1.25rem 1.5rem', fontSize: '0.85rem', color: '#4B5563' }}>
+                      <td style={{ padding: '1.25rem 1.5rem', fontSize: '0.85rem', color: 'var(--color-text-secondary)' }}>
                         {s.submittedAt ? formatDate(s.submittedAt, 'MMM d, yyyy h:mm a') : '-'}
                       </td>
 
@@ -193,11 +193,11 @@ export default function TeacherAssignmentDetailPage() {
                             <ExternalLink size={12} style={{ opacity: 0.5 }} />
                           </button>
                         ) : s.fileName ? (
-                          <span style={{ fontSize: '0.85rem', color: '#6B7280', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                          <span style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
                             <FileText size={14} /> {s.fileName} (No file)
                           </span>
                         ) : (
-                          <span style={{ fontSize: '0.85rem', color: '#9CA3AF' }}>No attachment</span>
+                          <span style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)' }}>No attachment</span>
                         )}
                       </td>
 
@@ -216,10 +216,10 @@ export default function TeacherAssignmentDetailPage() {
                           )}
                           <button
                             onClick={() => setGradeTarget(s)}
-                            style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', background: '#ffffff', border: '1px solid #E5E7EB', color: '#374151', padding: '0.4rem 0.8rem', borderRadius: '8px', fontSize: '0.8rem', fontWeight: 600, cursor: 'pointer', boxShadow: '0 1px 2px rgba(0,0,0,0.05)' }}
+                            style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', background: 'var(--color-surface)', border: '1px solid var(--color-border)', color: 'var(--color-text-secondary)', padding: '0.4rem 0.8rem', borderRadius: '8px', fontSize: '0.8rem', fontWeight: 600, cursor: 'pointer', boxShadow: '0 1px 2px rgba(0,0,0,0.05)' }}
                             className="hover:bg-gray-50 transition-colors"
                           >
-                            <Star size={14} style={{ color: s.status === 'graded' ? '#F59E0B' : '#6B7280' }} /> 
+                            <Star size={14} style={{ color: s.status === 'graded' ? '#F59E0B' : 'var(--color-text-muted)' }} /> 
                             {s.status === 'graded' ? 'Edit Grade' : 'Grade Now'}
                           </button>
                         </div>

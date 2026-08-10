@@ -45,22 +45,12 @@ export default function LoginPage() {
   };
 
   return (
-    <div style={{
-      position: 'fixed', inset: 0, zIndex: 50,
-      display: 'flex', width: '100%', height: '100vh',
-      backgroundColor: '#F8FAFC', fontFamily: 'var(--font-sans)',
-      overflow: 'hidden'
-    }}>
+    <div className="fixed inset-0 z-50 flex flex-col lg:flex-row w-full h-[100dvh] bg-slate-50 font-sans overflow-hidden">
       {/* ── LEFT PANEL (Dark Blue Gradient) ── */}
-      <div style={{
-        flex: 1,
-        background: 'linear-gradient(145deg, #1E293B 0%, #0F172A 100%)',
-        color: 'white',
-        display: 'flex', flexDirection: 'column',
-        padding: '3.5rem 4rem',
-        position: 'relative',
-        overflow: 'hidden'
-      }}>
+      <div
+        className="hidden lg:flex flex-1 flex-col relative overflow-hidden text-white"
+        style={{ background: 'linear-gradient(145deg, #1E293B 0%, #0F172A 100%)', padding: '4rem 5rem' }}
+      >
         {/* Decorative pattern overlay (optional, simplified) */}
         <div style={{
           position: 'absolute', top: 0, right: 0, width: '50%', height: '50%',
@@ -99,7 +89,7 @@ export default function LoginPage() {
         </div>
 
         {/* Features List */}
-        <div style={{ marginTop: '3.5rem', display: 'flex', flexDirection: 'column', gap: '1.5rem', position: 'relative', zIndex: 2 }}>
+        <div style={{ marginTop: '2rem', display: 'flex', flexDirection: 'column', gap: '1.25rem', position: 'relative', zIndex: 2 }}>
           <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
             <div style={{ width: 40, height: 40, background: 'rgba(59, 130, 246, 0.15)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#60A5FA', flexShrink: 0 }}>
               <ClipboardList size={20} />
@@ -130,7 +120,7 @@ export default function LoginPage() {
         </div>
 
         {/* Dashboard Mockup Image */}
-        <div style={{ position: 'absolute', bottom: '-4rem', right: '-4rem', width: '85%', zIndex: 1 }}>
+        <div style={{ position: 'absolute', bottom: '-4rem', right: '-4rem', width: '75%', minWidth: '450px', zIndex: 1 }}>
           <div style={{
             position: 'relative',
             width: '100%',
@@ -154,18 +144,16 @@ export default function LoginPage() {
       </div>
 
       {/* ── RIGHT PANEL (Login Form) ── */}
-      <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem', position: 'relative' }}>
+      <div className="flex flex-1 items-center justify-center p-4 sm:p-8 lg:p-12 relative overflow-y-auto">
         
         {/* The Card */}
-        <div style={{
-          width: '100%', maxWidth: 440, background: 'white', borderRadius: '24px',
-          padding: '3rem 2.5rem', boxShadow: '0 20px 40px rgba(0,0,0,0.04)',
-        }}>
+        <div className="w-full max-w-[440px] bg-white rounded-[24px] p-8 sm:p-10 shadow-[0_20px_40px_rgba(0,0,0,0.04)]">
           
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '2rem' }}>
             <div style={{ width: 64, height: 64, background: '#EFF6FF', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1rem' }}>
               <BookOpen size={32} color="#3B82F6" />
             </div>
+            <h1 className="lg:hidden text-xl font-bold text-slate-800 mb-1">EduMatrix</h1>
             <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#0F172A', margin: '0 0 0.25rem 0' }}>Welcome Back!</h2>
             <p style={{ fontSize: '0.875rem', color: '#64748B', margin: 0 }}>Login to continue to your account</p>
           </div>
