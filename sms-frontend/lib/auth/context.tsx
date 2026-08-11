@@ -89,7 +89,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       
       persist(authUser);
     } catch (error) {
-      console.error('Login failed:', error);
       throw error;
     } finally {
       setIsLoading(false);

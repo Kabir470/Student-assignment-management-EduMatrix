@@ -33,9 +33,6 @@ You can test the application using the following default demo credentials:
 ## 📸 Screenshots
 
 ### Admin Panel
-<details>
-<summary><strong>Click to view Admin Screenshots</strong></summary>
-<br>
 
 #### Admin Dashboard
 ![Admin Dashboard](./projects%20picture/Admin/admin_dashboard.png)
@@ -49,12 +46,7 @@ You can test the application using the following default demo credentials:
 #### Reports & Analytics
 ![Admin Reports](./projects%20picture/Admin/admin_report_and_analytics.png)
 
-</details>
-
 ### Teacher Panel
-<details>
-<summary><strong>Click to view Teacher Screenshots</strong></summary>
-<br>
 
 #### Teacher Dashboard
 ![Teacher Dashboard](./projects%20picture/Teacher/teacher_dashboard.png)
@@ -68,12 +60,7 @@ You can test the application using the following default demo credentials:
 ![AI Generation Step 3](./projects%20picture/Teacher/teacher_ai_chat_3.png)
 ![AI Generation Step 4](./projects%20picture/Teacher/teacher_ai_chat-4.png)
 
-</details>
-
 ### Student Panel
-<details>
-<summary><strong>Click to view Student Screenshots</strong></summary>
-<br>
 
 #### Student Dashboard
 ![Student Dashboard](./projects%20picture/Student/student_dashboard.png)
@@ -86,8 +73,6 @@ You can test the application using the following default demo credentials:
 
 #### My Submissions
 ![Student My Submissions](./projects%20picture/Student/student_my_submisions.png)
-
-</details>
 
 ---
 
