@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { BookOpen, Mail, Lock, Eye, EyeOff, ClipboardList, ShieldCheck, LineChart, ArrowRight } from 'lucide-react';
+import { BookOpen, Mail, Lock, Eye, EyeOff, ClipboardList, ShieldCheck, LineChart, ArrowRight, Sparkles } from 'lucide-react';
 import { useAuth } from '@/lib/auth/context';
 import type { LoginInput } from '@/lib/types';
 import Image from 'next/image';
@@ -84,7 +84,7 @@ export default function LoginPage() {
           <h2 style={{ fontSize: '3.5rem', fontWeight: 800, lineHeight: 1.1, margin: 0, color: '#60A5FA' }}>Achieve.</h2>
           
           <p style={{ fontSize: '1rem', color: '#CBD5E1', marginTop: '1.5rem', lineHeight: 1.6, maxWidth: 360 }}>
-            A smart platform to create, submit, review and manage assignments efficiently.
+            An AI-powered smart platform to create, submit, review and manage assignments efficiently.
           </p>
         </div>
 
@@ -110,11 +110,11 @@ export default function LoginPage() {
           </div>
           <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
             <div style={{ width: 40, height: 40, background: 'rgba(168, 85, 247, 0.15)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#C084FC', flexShrink: 0 }}>
-              <LineChart size={20} />
+              <Sparkles size={20} />
             </div>
             <div>
-              <h3 style={{ fontSize: '0.9rem', fontWeight: 700, margin: '0 0 0.25rem 0' }}>Real-time Insights</h3>
-              <p style={{ fontSize: '0.8rem', color: '#94A3B8', margin: 0, lineHeight: 1.5, maxWidth: 260 }}>Track progress and performance with real-time analytics.</p>
+              <h3 style={{ fontSize: '0.9rem', fontWeight: 700, margin: '0 0 0.25rem 0' }}>AI-Powered Generation</h3>
+              <p style={{ fontSize: '0.8rem', color: '#94A3B8', margin: 0, lineHeight: 1.5, maxWidth: 260 }}>Draft rich, academic assignments instantly using Gemini AI.</p>
             </div>
           </div>
         </div>
@@ -154,6 +154,9 @@ export default function LoginPage() {
               <BookOpen size={32} color="#3B82F6" />
             </div>
             <h1 className="lg:hidden text-xl font-bold text-slate-800 mb-1">EduMatrix</h1>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', padding: '0.25rem 0.75rem', background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%)', color: '#6366F1', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 700, marginBottom: '0.75rem', border: '1px solid rgba(99, 102, 241, 0.2)' }}>
+              <Sparkles size={14} /> AI-POWERED PLATFORM
+            </div>
             <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#0F172A', margin: '0 0 0.25rem 0' }}>Welcome Back!</h2>
             <p style={{ fontSize: '0.875rem', color: '#64748B', margin: 0 }}>Login to continue to your account</p>
           </div>

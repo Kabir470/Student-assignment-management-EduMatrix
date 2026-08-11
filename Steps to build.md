@@ -40,9 +40,17 @@ Ensure you have Docker and Docker Compose installed.
    docker-compose up --build
    ```
 3. The frontend will be available at [http://localhost:3000](http://localhost:3000) and the backend API at `http://localhost:8080`.
+4. **Interactive Swagger API Documentation**: You can view and test all RESTful API endpoints interactively via Swagger UI at [http://localhost:8080/swagger](http://localhost:8080/swagger) (or `http://localhost:5000/swagger` when running backend locally via `dotnet run`).
 
 **Option B: Running Manually (Frontend only)**
 1. Navigate to the frontend directory: `cd sms-frontend`
 2. Install dependencies: `npm install`
 3. Run the development server: `npm run dev`
 4. Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+### 6. Running Unit Tests
+To run the automated backend unit tests covering business rules, authorization, and submission workflows:
+```bash
+cd sms-backend
+dotnet test
+```
