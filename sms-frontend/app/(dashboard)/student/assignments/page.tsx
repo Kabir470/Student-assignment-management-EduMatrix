@@ -58,6 +58,11 @@ export default function StudentAssignmentsPage() {
 
   const getSubmission = (assignmentId: string) => submissions.find(s => s.assignmentId === assignmentId);
 
+  const stripHtml = (html: string) => {
+    if (!html) return '';
+    return html.replace(/<[^>]*>?/gm, '').replace(/&nbsp;/g, ' ');
+  };
+
   const filtered = assignments.filter(a => {
     if (search && !a.title.toLowerCase().includes(search.toLowerCase()) && !a.courseName.toLowerCase().includes(search.toLowerCase())) return false;
     const sub = getSubmission(a.id);
@@ -152,9 +157,12 @@ export default function StudentAssignmentsPage() {
                       ) : null}
                     </div>
 
-                    <h3 style={{ fontWeight: 700, color: 'var(--color-text)', marginBottom: '0.5rem', fontSize: '0.975rem' }}>{a.title}</h3>
-                    <p style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)', marginBottom: '1rem', lineHeight: 1.5 }}>
-                      {a.description.slice(0, 90)}...
+                    <h3 style={{ fontWeight: 700, color: 'var(--color-text)', marginBottom: '0.5rem', fontSize: '0.975rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{a.title}</h3>
+                    <p style={{ 
+                      fontSize: '0.8rem', color: 'var(--color-text-muted)', marginBottom: '1rem', lineHeight: 1.5,
+                      display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', wordBreak: 'break-word'
+                    }}>
+                      {stripHtml(a.description)}
                     </p>
 
                     <div style={{ borderTop: '1px solid var(--color-border)', paddingTop: '0.75rem', display: 'flex', justifyContent: 'space-between', fontSize: '0.78rem', color: 'var(--color-text-muted)' }}>

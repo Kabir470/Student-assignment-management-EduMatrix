@@ -220,8 +220,19 @@ export default function AiAssignmentModal({ isOpen, onClose, onApprove, courses 
                     boxShadow: '0 4px 20px rgba(0,0,0,0.04), 0 0 0 1px rgba(168, 85, 247, 0.05) inset',
                     animation: 'fadeInUp 0.4s ease-out'
                   }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem', color: '#9333ea', fontSize: '0.8rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                      <Sparkles size={14} /> AI Generated Draft
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#9333ea', fontSize: '0.8rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                        <Sparkles size={14} /> AI Generated Draft
+                      </div>
+                      {expandedEditorId !== msg.id && (
+                        <button 
+                          onClick={() => setExpandedEditorId(msg.id)}
+                          className="btn btn-secondary btn-sm"
+                          style={{ display: 'flex', gap: '0.35rem', alignItems: 'center', fontSize: '0.8rem', padding: '0.25rem 0.75rem' }}
+                        >
+                          <Maximize2 size={14}/> Expand
+                        </button>
+                      )}
                     </div>
                     
                     <input 
@@ -238,18 +249,22 @@ export default function AiAssignmentModal({ isOpen, onClose, onApprove, courses 
                       ? { position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 10000, background: 'var(--color-background)', padding: '2rem', display: 'flex', flexDirection: 'column', gap: '1rem', overflowY: 'auto' } 
                       : { marginBottom: '1.5rem', marginTop: '0.5rem', position: 'relative' }
                     }>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        {expandedEditorId === msg.id && <h2 style={{margin: 0, color: 'var(--color-text)'}}>Edit Assignment Description</h2>}
-                        <button 
-                          onClick={() => setExpandedEditorId(expandedEditorId === msg.id ? null : msg.id)}
-                          style={{ background: 'none', border: 'none', color: 'var(--color-text-secondary)', cursor: 'pointer', padding: '0.25rem', display: 'flex', gap: '0.25rem', alignItems: 'center', fontSize: '0.8rem', position: expandedEditorId === msg.id ? 'static' : 'absolute', top: '-1.8rem', right: 0, zIndex: 10 }}
-                        >
-                          {expandedEditorId === msg.id ? <><Minimize2 size={14}/> Collapse</> : <><Maximize2 size={12}/> Expand Editor</>}
-                        </button>
-                      </div>
+                      {expandedEditorId === msg.id && (
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <h2 style={{margin: 0, color: 'var(--color-text)'}}>Edit Assignment Description</h2>
+                          <button 
+                            onClick={() => setExpandedEditorId(null)}
+                            className="btn btn-secondary"
+                            style={{ display: 'flex', gap: '0.35rem', alignItems: 'center' }}
+                          >
+                            <Minimize2 size={16}/> Collapse
+                          </button>
+                        </div>
+                      )}
                       <RichTextEditor 
                         value={msg.draftData.description || ''}
                         onChange={(val) => updateDraftData(msg.id, { description: val })}
+                        expanded={expandedEditorId === msg.id}
                       />
                     </div>
 

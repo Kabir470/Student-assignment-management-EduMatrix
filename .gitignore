@@ -64,7 +64,7 @@ coverage/
 *.lcov
 .nyc_output/
 
-database-info/
+database info/
 project discussion and infos/
 Project-info/
 info-and-pictures/

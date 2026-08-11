@@ -58,6 +58,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       });
 
       if (error || !data.session) {
+        const msg = error?.message?.toLowerCase() || '';
+        if (msg.includes('invalid login credentials') || msg.includes('invalid email or password')) {
+          throw new Error('Invalid email or password');
+        }
         throw new Error(error?.message || 'Failed to authenticate');
       }
 

@@ -73,12 +73,11 @@ export default function TopNav({ isSidebarCollapsed, onMobileMenuToggle, isMobil
       className={`topnav ${isSidebarCollapsed ? 'sidebar-collapsed' : ''}`}
     >
       {/* Left: Mobile menu + Search */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-        <button
+      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: 1 }}>
+        <button 
+          className="btn btn-ghost btn-icon mobile-menu-btn" 
           onClick={onMobileMenuToggle}
-          className="btn btn-ghost btn-icon"
-          style={{ display: 'none' }}
-          id="mobile-menu-btn"
+          aria-label="Toggle menu"
         >
           {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
         </button>

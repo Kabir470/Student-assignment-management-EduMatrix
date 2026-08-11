@@ -14,9 +14,10 @@ interface RichTextEditorProps {
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
+  expanded?: boolean;
 }
 
-export default function RichTextEditor({ value, onChange, placeholder }: RichTextEditorProps) {
+export default function RichTextEditor({ value, onChange, placeholder, expanded }: RichTextEditorProps) {
   
   // Custom toolbar configuration
   const modules = useMemo(() => ({
@@ -29,7 +30,7 @@ export default function RichTextEditor({ value, onChange, placeholder }: RichTex
   }), []);
 
   return (
-    <div className="rich-text-editor-container">
+    <div className={`rich-text-editor-container ${expanded ? 'expanded' : ''}`}>
       <ReactQuill 
         theme="snow"
         value={value}
@@ -60,6 +61,18 @@ export default function RichTextEditor({ value, onChange, placeholder }: RichTex
           max-height: 300px;
           overflow-y: auto;
           color: var(--color-text);
+        }
+        .rich-text-editor-container.expanded {
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+        }
+        .rich-text-editor-container.expanded .quill {
+          flex: 1;
+        }
+        .rich-text-editor-container.expanded .ql-container {
+          max-height: none;
+          flex: 1;
         }
         .rich-text-editor-container .ql-editor {
           padding: 1rem;

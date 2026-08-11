@@ -35,9 +35,18 @@ export async function POST(req: NextRequest) {
     // Use Gemini 1.5 Pro for complex reasoning and structured output
     const model = genAI.getGenerativeModel({ model: 'gemini-3.6-flash' });
 
+    const now = new Date();
+    const tomorrow = new Date(now);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const tomorrowIso = tomorrow.toISOString();
+
     const systemInstruction = `
 You are an expert teacher's assistant agent. Your primary role is to help a teacher draft comprehensive, high-quality assignments based on their natural language requests.
 If the teacher is vague or provides incomplete text (e.g. "make a quiz on cells"), you MUST use your expertise to infer their motive and automatically write a proper, academic, beautifully formatted description with detailed questions.
+
+CURRENT SYSTEM CONTEXT:
+- Today's Date: ${now.toISOString()}
+- Tomorrow's Date: ${tomorrowIso}
 
 CRITICAL TONE REQUIREMENT:
 The assignment description MUST be written with a clear, positive, supportive, and student-friendly tone.
@@ -59,7 +68,7 @@ The JSON object must strictly match this TypeScript interface:
     "title": string (A concise, academic title),
     "description": string (The beautifully formatted HTML description containing instructions, questions, headers, etc.),
     "totalMarks": number (Infer a reasonable total, e.g. 50 or 100),
-    "dueDate": string (An ISO date string, typically 7 days from now),
+    "dueDate": string (An ISO date string. By default, if no timeframe is specified, you MUST strictly use exactly "${tomorrowIso}"),
     "allowLateSubmissions": boolean (Default false)
   }
 }
