@@ -26,7 +26,7 @@ You can test the application using the following default demo credentials:
 | **Teacher** | `farhad@tc.com`     | `123456` |
 | **Student**    | `sk@st.com`    | `123456` |
 
-*(Note: Public registration is disabled by default; new users must be provisioned by an Admin).*
+*(Note: Public registration is disabled by default for security reason; new users must be provisioned by an Admin. and First Admin ID can only be created from Database directly. insert sql query is added for this purpose)*.
 
 ---
 
