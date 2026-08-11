@@ -1,6 +1,6 @@
 # Recruitment Assessment Verification & Compliance Summary
 
-**Project Name**: EduMatrix — Assignment & Submission Management System  
+**Project Name**: EduMatrix — AI Powered Assignment & Submission Management System  
 **Applicant**: Kabir  
 **Live Application URL**: [https://edumatrix.turtledevs.com](https://edumatrix.turtledevs.com)  
 **Target Specification PDF**: `Project-info/Assistant Software Engineer Recruitment Project.pdf`
@@ -78,3 +78,11 @@ Every single explicit and implicit requirement outlined in `Assistant Software E
 2. **Live Production Deployment**: Fully deployed live on [https://edumatrix.turtledevs.com](https://edumatrix.turtledevs.com).
 3. **Dark Mode**: Complete dark mode theme toggling across all dashboard views.
 4. **Visual Analytics**: Interactive Recharts graphs for Admin KPI monitoring.
+5. **Secured Authentication**: Secured JWT authentication with role-based access control.
+6. **File Uploads**: Secure file upload for student submissions with file size validation and preview.
+7. **Secured Routes**: Secured routes with role-based access control.
+8. **Real-time Notifications**: Real-time notification system for assignment updates and submissions.
+9. **Optimized Performance**: Optimized performance with caching and lazy loading.
+10. **Responsive Design**: Responsive design for all devices.
+11. **Interactive API Documentation**: Interactive API documentation with Swagger / OpenAPI.
+12. **Database**: PostgreSQL database with EF Core Code-First / SQL Schema migrations.
