@@ -17,30 +17,6 @@ VALUES (
     TRUE
 ) ON CONFLICT (email) DO NOTHING;
 
--- 2. Add a Teacher
-INSERT INTO users (id, email, password_hash, first_name, last_name, role, is_active)
-VALUES (
-    uuid_generate_v4(),
-    'teacher1@edumatrix.com',
-    '$2a$11$NmOi5aeQsmil1g1QSEV25.naDY3PiT8bajE9ostqVHlxHjviN54Wy', -- Admin@123456
-    'John',
-    'Doe',
-    'teacher',
-    TRUE
-) ON CONFLICT (email) DO NOTHING;
-
--- 3. Add a Student
-INSERT INTO users (id, email, password_hash, first_name, last_name, role, is_active)
-VALUES (
-    uuid_generate_v4(),
-    'student1@edumatrix.com',
-    '$2a$11$NmOi5aeQsmil1g1QSEV25.naDY3PiT8bajE9ostqVHlxHjviN54Wy', -- Admin@123456
-    'Jane',
-    'Smith',
-    'student',
-    TRUE
-) ON CONFLICT (email) DO NOTHING;
-
 /*
 ============================================================
  STEPS TO EXECUTE IN SUPABASE:
