@@ -36,8 +36,6 @@ build/
 dist/
 
 # Environment variables & secrets
-.env
-.env.local
 .env.development.local
 .env.test.local
 .env.production.local
@@ -45,7 +43,6 @@ dist/
 token.json
 
 # IDEs and Editors
-.vscode/
 .idea/
 *.swp
 *~
@@ -72,3 +69,4 @@ demo-project-design-reference/
 branch_structure.json
 temp_auto_push.bat
 temp_interactive_push.bat
+config.bat
